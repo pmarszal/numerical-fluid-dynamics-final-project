@@ -2,15 +2,16 @@
 #include <cmath>
 #include <vector>
 #include <fstream>
+#include <string>
 using namespace std;
 
-int Nx = 10;
-int Ny = 10;
-double dt = 0.001;
-double t_fin = 0.1;
+int Nx = 30;
+int Ny = 30;
+double dt = 0.0002;
+double t_fin;
 double dx = 1./Nx;
 double dy = 1./Ny;
-double Pe = 2.;
+double Pe;
 
 /*
 Ein Integrationsschritt. Beinhaltet die Schleife ueber x und y. Funktion veraendert das
@@ -53,9 +54,9 @@ void print_array(vector<vector< double> > T){
 /*
 Funktion zum Speichern des Ergebnisses
 */
-void save_data(vector<vector<double> > T){
+void save_data(vector<vector<double> > T, const char* fname){
 	ofstream output ;
-	output.open("data.txt");
+	output.open(fname);
 	for(int j = T[0].size()-1; j>=0; j--){
 		
 		for(int i=0;i<T.size();i++){
@@ -68,7 +69,14 @@ void save_data(vector<vector<double> > T){
 
 
 int main(int argc, char ** argv){
-	
+	/*
+	Parameter von Konsole erfahren
+	*/
+	sscanf(argv[1], "%lf", &t_fin);
+	sscanf(argv[2],"%lf", &Pe);
+	/*
+	Geschwindigkeitsfelder initialisieren
+	*/
 	vector<vector<double> > u_0;
 	vector<vector<double> > v_0;
 	for(int i = 0; i< Nx+1; i++){
@@ -81,14 +89,6 @@ int main(int argc, char ** argv){
 		u_0.push_back(u_F);
 		v_0.push_back(v_F);
 	}
-//DEBUG	
-/*
-	cout << "u_0: "<<endl;
-	print_array(u_0);
-	cout << "v_0: " << endl;
-	print_array(v_0);	
-*/
-
 	/*
 	Definiere die Anfangsbedingung fuer T. 
 	*/
@@ -107,13 +107,12 @@ int main(int argc, char ** argv){
 	Schleife ueber die Zeit
 	*/
 	for(int n=0; n < t_fin/dt; n++){
+
 		timestep(T,u_0,v_0);		
-		
-//		cout << "Step " << n << ": done!" << endl;
 	}
 
 	print_array(T);
-	save_data(T);
 
+	save_data(T,argv[3]);
 	return 0;
 }
