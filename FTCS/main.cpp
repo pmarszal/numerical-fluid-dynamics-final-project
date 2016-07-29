@@ -1,27 +1,46 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
-
+#include <fstream>
 using namespace std;
 
 int Nx = 10;
 int Ny = 10;
-double dt = 1;
-double t_fin = 2;
+double dt = 0.001;
+double t_fin = 0.1;
 double dx = 1./Nx;
 double dy = 1./Ny;
+double Pe = 2.;
 
-
-void timestep(vector<vector<double> > T){
-	int i = 0;
-	int j = 0;
-	int Ni = T.size();
-	int Nj = T[0].size();
-	
+/*
+Ein Integrationsschritt. Beinhaltet die Schleife ueber x und y. Funktion veraendert das
+Zielarray, welches ihr uebergeben wird.
+*/
+void timestep(vector<vector<double> > &T, vector<vector<double> > u_0, vector<vector<double> > v_0){
+	vector<vector<double> > T_old = T;
+	for(int i =1; i< Nx; i++){
+		for(int j = 1; j<Ny;j++){
+			//Advektionsterm: 2te Ordnung Eulerschritt zentriert
+			double Adv = dt*Pe/2.* (u_0[i][j]/dx*(T_old[i+1][j]-T_old[i-1][j]) + v_0[i][j]/dy*(T_old[i][j+1]-T_old[i][j-1]) );
+			//Diffusionsterm: 2te Ordnung zentrierte Differenzen
+			double Diff = dt/dx/dx*(T_old[i+1][j]-2.*T_old[i][j]+T_old[i-1][j])+dt/dy/dy*(T_old[i][j+1]-2.*T_old[i][j]+T_old[i][j-1]);
+			
+			T[i][j] = T_old[i][j]-Adv+Diff;
+		}
+	}
+	/* Schleife um den Rand */
+	for(int j = 1; j< Ny; j++){
+		//Vorwaertsdifferenz zweiter Ordnung
+		T[0][j]= 1./3.*(0.+4.* T[1][j]-T[2][j]);
+		//Rueckwaertsdifferenz zweiter Ordnung
+		T[Nx][j]= 1./3.*(4.*T[Nx-1][j]-T[Nx-2][j]);
+	}
 	
 	
 }
-
+/*
+Funktion zum Ausgeben des 2D Arrays zum Debuggen.
+*/
 void print_array(vector<vector< double> > T){
 	for(int j = T[0].size()-1; j>=0; j--){
 		
@@ -31,11 +50,25 @@ void print_array(vector<vector< double> > T){
 		cout << endl;
 	}
 }
+/*
+Funktion zum Speichern des Ergebnisses
+*/
+void save_data(vector<vector<double> > T){
+	ofstream output ;
+	output.open("data.txt");
+	for(int j = T[0].size()-1; j>=0; j--){
+		
+		for(int i=0;i<T.size();i++){
+			output << T[i][j] << "  ";
+		}
+		output << endl;
+	}
+
+}
+
 
 int main(int argc, char ** argv){
 	
-
-
 	vector<vector<double> > u_0;
 	vector<vector<double> > v_0;
 	for(int i = 0; i< Nx+1; i++){
@@ -48,7 +81,13 @@ int main(int argc, char ** argv){
 		u_0.push_back(u_F);
 		v_0.push_back(v_F);
 	}
-
+//DEBUG	
+/*
+	cout << "u_0: "<<endl;
+	print_array(u_0);
+	cout << "v_0: " << endl;
+	print_array(v_0);	
+*/
 
 	/*
 	Definiere die Anfangsbedingung fuer T. 
@@ -61,8 +100,6 @@ int main(int argc, char ** argv){
 		}
 		T.push_back(F);
 	}
-	print_array(T);
-
 	/* 
 	Integration 
 	*/
@@ -70,30 +107,13 @@ int main(int argc, char ** argv){
 	Schleife ueber die Zeit
 	*/
 	for(int n=0; n < t_fin/dt; n++){
-		/*
-		Kopiere das Feld zum aktuellen Zeitpunkt, fuer die 
-		Berechnung des Feldes zum naechsten Zeitpunktes.
-		*/
-		vector<vector<double> > T_old;
-		for(int i = 0; i<T.size(); i++){
-			vector<double> F;
-			for(int j= 0; j<T[i].size();j++){
-				F.push_back(T[i][j]);
-			}  
-			T_old.push_back(F);
-		}
-		//DEBUG
-		/*
-		print_array(T);
-		cout << "Old_array:" << endl;
-		print_array(T_old);
-		*/
+		timestep(T,u_0,v_0);		
 		
-		
+//		cout << "Step " << n << ": done!" << endl;
 	}
 
+	print_array(T);
+	save_data(T);
 
-
-	cout << "It works!" << endl;
 	return 0;
 }
