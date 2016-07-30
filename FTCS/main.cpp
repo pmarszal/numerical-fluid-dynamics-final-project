@@ -83,7 +83,7 @@ int main(int argc, char ** argv){
 		vector<double> v_F;
 		for(int j = 0; j<Ny+1;j++){
 			u_F.push_back(M_PI*sin(2.*M_PI*i*dx)*cos(M_PI*j*dy));
-			v_F.push_back(-2*M_PI*cos(2*M_PI*i*dx)*sin(M_PI*j*dy));
+			v_F.push_back(-2.*M_PI*cos(2.*M_PI*i*dx)*sin(M_PI*j*dy));
 		}
 		u_0.push_back(u_F);
 		v_0.push_back(v_F);
@@ -192,7 +192,7 @@ void timestep(vector<vector<double> > &T, vector<vector<double> > u_0, vector<ve
 	/* Schleife um den Rand */
 	for(int j = 1; j< Ny; j++){
 		//Vorwaertsdifferenz zweiter Ordnung
-		T[0][j]= 1./3.*(0.+4.* T[1][j]-T[2][j]);
+		T[0][j]= 1./3.*(4.* T[1][j]-T[2][j]);
 		//Rueckwaertsdifferenz zweiter Ordnung
 		T[Nx][j]= 1./3.*(4.*T[Nx-1][j]-T[Nx-2][j]);
 	}
@@ -201,13 +201,13 @@ void timestep(vector<vector<double> > &T, vector<vector<double> > u_0, vector<ve
 Funktion zum Berechnen des Fehlers
 */
 double SSE (vector<vector< double> > T , vector<vector<double> > T_star) {
-	double Sum_SE = 0;
+	double Sum_SE = 0.;
 	for(int i = 0; i<T.size();i++){
 		for(int j = 0; j<T[i].size();j++){
-			Sum_SE+=(T[i][j]-T_star[i][j])*(T[i][j]-T_star[i][j]);
+			Sum_SE=Sum_SE+(T[i][j]-T_star[i][j])*(T[i][j]-T_star[i][j]);
 		}
 	}
-	return sqrt(Sum_SE)/Nx;
+	return sqrt(Sum_SE);
 }
 
 /*
@@ -232,23 +232,26 @@ double T_star_ij(double x, double y){
 Angepasster Zeitschritt mit Q zur Fehlerbestimmung
 */
 void timestep_with_Q(vector<vector<double> > &T, vector<vector<double> > u_0, vector<vector<double> > v_0, vector<vector<double> > Q){
-	vector<vector<double> > T_old = T;
+	vector<vector<double> > T_old;
+	T_old=T;
 	for(int i =1; i< Nx; i++){
 		for(int j = 1; j<Ny;j++){
 			//Advektionsterm: 2te Ordnung Eulerschritt zentriert
-			double Adv = dt*Pe/2.* (u_0[i][j]/dx*(T_old[i+1][j]-T_old[i-1][j]) + v_0[i][j]/2./dy*(T_old[i][j+1]-T_old[i][j-1]) );
+			long double Adv = dt*Pe/2.* (u_0[i][j]/dx*(T_old[i+1][j]-T_old[i-1][j]) + v_0[i][j]/dy*(T_old[i][j+1]-T_old[i][j-1]) );
 			//Diffusionsterm: 2te Ordnung zentrierte Differenzen
-			double Diff = dt/dx/dx*(T_old[i+1][j]-2.*T_old[i][j]+T_old[i-1][j])+dt/dy/dy*(T_old[i][j+1]-2.*T_old[i][j]+T_old[i][j-1]);
-			
-			T[i][j] = T_old[i][j]-Adv+Diff+dt*Q[i][j];
-			//T[i][j] = T_old[i][j]-Adv+Diff+dt*1/6.*(Q[i-1][j]+Q[i+1][j]+Q[i][j+1]+Q[i][j-1]+2.*Q[i][j]);
+			long double Diff = dt/dx/dx*(T_old[i+1][j]-2.*T_old[i][j]+T_old[i-1][j])+dt/dy/dy*(T_old[i][j+1]-2.*T_old[i][j]+T_old[i][j-1]);
 
+			//T[i][j]=T_old[i][j]-dt*Pe*0.5* (u_0[i][j]/dx*(T_old[i+1][j]-T_old[i-1][j]) + v_0[i][j]/dy*(T_old[i][j+1]-T_old[i][j-1]) )+dt/dx/dx*(T_old[i+1][j]-2.*T_old[i][j]+T_old[i-1][j])+dt/dy/dy*(T_old[i][j+1]-2.*T_old[i][j]+T_old[i][j-1])+dt*Q[i][j];
+			
+			//T[i][j] = T_old[i][j] -dt*Pe/(2.0*dx)*u_0[i][j]*(T_old[i+1][j]-T_old[i-1][j])-dt*Pe/(2.*dy)*v_0[i][j]*(T_old[i][j+1]-T_old[i][j-1])+dt/(dx*dx)*(T_old[i+1][j]-2.*T_old[i][j]+T_old[i-1][j])+dt/(dy*dy)*(T_old[i][j+1]-2.*T_old[i][j]+T_old[i][j-1])+ dt*Q[i][j];
+			T[i][j] = T_old[i][j]-Adv+Diff+dt*Q[i][j]; // This doesn't work well, there seems to be precision missing.
 		}
+		
 	}
 	/* Schleife um den Rand */
 	for(int j = 1; j< Ny; j++){
 		//Vorwaertsdifferenz zweiter Ordnung
-		T[0][j]= 1./3.*(0.+4.* T[1][j]-T[2][j]);
+		T[0][j]= 1./3.*(4.* T[1][j]-T[2][j]);
 		//Rueckwaertsdifferenz zweiter Ordnung
 		T[Nx][j]= 1./3.*(4.*T[Nx-1][j]-T[Nx-2][j]);
 	}
