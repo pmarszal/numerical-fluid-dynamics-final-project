@@ -115,13 +115,13 @@ std::vector<double>  inverse_matrix_multiplication(std::vector<std::vector<doubl
   return y;
 }
 
-void SOR(vector<double>  &T, vector<vector<double> > M, vector<vector<double> > LD, double omega){
+void SOR(vector<double>  &T, vector<vector<double> > M, vector<vector<double> > LD, double omega, double abbruch){
 	std::vector<double> x_old=T;
 	std::vector<double> x_n = x_old;
 	double r = 1000.;
 	int n_gs = 0;
 
-	while(r>0.00001){
+	while(r>abbruch){
 		std::cout<< "\r"<<n_gs << "  : "<< r<< std::flush;
 		std::vector<double> r_n = subtract_vector(matrix_times_vector(M,x_old), T);
 		r = sqrt(scalar_product(r_n,r_n));

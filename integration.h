@@ -193,7 +193,7 @@ vector<double> reshape_vector(vector<vector<double> > T, vector<vector<double> >
         j++;
       }
       else if(j==T.size()-2){
-				double Sj_up = -Diff+Adv*v_0[i][j];
+				double Sj_up = -Diff+Adv*v_0[i][j+1];
         Vec_M.push_back(T[i][j]-Sj_up*T_oben);
         j++;
       }
@@ -237,22 +237,22 @@ vector<vector<double> > BCTS_implicit_Matrix(vector<vector<double> > u_0, vector
 			int i = (l/(u_0.size()-2)+k/(u_0.size()-2))%u_0.size();
 			//cout << k<<" "<<l <<" : "<<i<<" " <<j << endl;
 			double Diff= dt/dx/dx;
-			double Adv = 0.5*dt*Pe/2./dx;
+			double Adv = dt*Pe/2./dx;
 			if((k-l)==0){ // k==l => Diagonale
 				MLD[k][l]=(1.+4.*Diff);//S_diag
 			}
 			else if(l-k==1){ // l-k==1 => eins links von der Diagonalen
-				MLD[k][l]=(-Diff-Adv*v_0[i][j]);//Sj_low
+				MLD[k][l]=(-Diff-Adv*v_0[i][j-1]);//Sj_low
 			}
 			else if(l-k==-1){ // l-k = -1 => eins rechts von der Diagonalen
-				MLD[k][l]=(-Diff+Adv*v_0[i][j]);//Sj_up
+				MLD[k][l]=(-Diff+Adv*v_0[i][j+1]);//Sj_up
 			}
 			else if(l-k==u_0.size()-2){ // l-k==Ny-2 => ein Block links von der Diagonalen
-				if(i==1){//Neumann Randbed.
+				if(i==0){//Neumann Randbed.
 					MLD[k][l]=(-2.*Diff);
 				}
 				else{
-					MLD[k][l]=(-Diff-Adv*u_0[i][j]);//Si_low
+					MLD[k][l]=(-Diff-Adv*u_0[i-1][j]);//Si_low
 				}
 			}
 			else if(l-k==-u_0.size()+2){// l-k==-(Ny-2) => ein Block rechts von der Diagonalen
@@ -260,7 +260,7 @@ vector<vector<double> > BCTS_implicit_Matrix(vector<vector<double> > u_0, vector
 					MLD[k][l]=(-2.*Diff);
 				}
 				else{
-					MLD[k][l]=(-Diff+Adv*u_0[i][j]);//Si_up
+					MLD[k][l]=(-Diff+Adv*u_0[i+1][j]);//Si_up
 				}
 			}
 

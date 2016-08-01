@@ -23,10 +23,11 @@ int main(int argc, char** argv){
 
   //Create a Vector from 2D-Field
   std::vector<double> T_Vec = reshape_vector(T, u_0, v_0);
+  print_vector(T_Vec);
   //Calculate the implicit Matrix
   std::vector<std::vector<double> > M = BCTS_implicit_Matrix(u_0,v_0);
   std::vector<std::vector<double> > LD = triangularize(M);
-
+/*
   cout << "Dominance\n";
   for(int i = 0;i<T.size(); i++){
     double sum = 0;
@@ -36,6 +37,27 @@ int main(int argc, char** argv){
     sum -= sqrt(M[i][i]*M[i][i]);
     cout << sum/sqrt(M[i][i]*M[i][i]) << "\t";
   }
+  cout<<endl;
+*/
+//  print_matrix(M);
+//MAtrix Indizes
+/*
+  cout << "l k :  ";
+  for(int k = 0; k<M.size(); k++){if(k<10){cout << k<<"  :   ";}
+      else{
+        cout << k<<"  :  ";
+      }}
+  cout << endl;
+  for(int l=0; l<M.size();l++){
+    if(l<10){cout << l <<"   ";}
+    else{cout << l <<"  ";}
+  	for(int k=0;k<M.size();k++){
+  		int j = (l%(u_0.size()-2)+k%(u_0.size()-2))%(u_0.size()-2)+1;
+  		int i = (l/(u_0.size()-2)+k/(u_0.size()-2))%u_0.size();
+  		cout <<" : "<<i<<"," <<j<<" ";}
+      cout << endl;
+    }
+*/
 
   double omega=1.0;
   ofstream outfile;
@@ -44,7 +66,7 @@ int main(int argc, char** argv){
   int i_t = 0;
   for(int n=0; n*dt<t_fin; n++){
     cout << "Time:" << n*dt<< ", Iteration: "<<std::endl;
-    SOR(T_Vec,M,LD, omega);
+    SOR(T_Vec,M,LD, omega, 0.0001);
     //Snapshots machen
     if( (n+1)*dt >= t_snap[i_t] && (n+1)*dt<t_snap[i_t+1]){
       ostringstream snap_name;
@@ -56,7 +78,7 @@ int main(int argc, char** argv){
     }
   }
   T=shape_back(T_Vec, T_unten, T_oben);
-  print_array(T);
+  //print_array(T);
   save_data(T,"test.txt");
   return 0;
 }
