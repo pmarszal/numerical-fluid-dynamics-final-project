@@ -27,14 +27,24 @@ int main(int argc, char** argv){
   std::vector<std::vector<double> > M = BCTS_implicit_Matrix(u_0,v_0);
   std::vector<std::vector<double> > LD = triangularize(M);
 
+  cout << "Dominance\n";
+  for(int i = 0;i<T.size(); i++){
+    double sum = 0;
+    for(int j = 0;j<T.size(); j++){
+      sum+=sqrt(M[i][j]*M[i][j]);
+    }
+    sum -= sqrt(M[i][i]*M[i][i]);
+    cout << sum/sqrt(M[i][i]*M[i][i]) << "\t";
+  }
+
   double omega=1.0;
   ofstream outfile;
   outfile.open("iterationszahl.txt");
 
-int i_t = 0;
+  int i_t = 0;
   for(int n=0; n*dt<t_fin; n++){
     cout << "Time:" << n*dt<< ", Iteration: "<<std::endl;
-    BTCS(T_Vec,M,LD, omega);
+    SOR(T_Vec,M,LD, omega);
     //Snapshots machen
     if( (n+1)*dt >= t_snap[i_t] && (n+1)*dt<t_snap[i_t+1]){
       ostringstream snap_name;

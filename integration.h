@@ -175,41 +175,25 @@ void FTCS_with_Q(vector<vector<double> > &T, vector<vector<double> > u_0, vector
 Ein Integrationsschritt mit dem BTCS-Verfahren. Beinhaltet die Schleife ueber x und y. Funktion veraendert das
 Zielarray, welches ihr uebergeben wird.
 */
-void BTCS(vector<double>  &T, vector<vector<double> > M, vector<vector<double> > LD, double omega){
-	std::vector<double> x_old = T;
-	std::vector<double> x_n = x_old;
-	double r = 1000.;
-	int n_gs = 0;
 
-	while(r>0.00001){
-		cout<< "\r"<<n_gs << "  : "<< r<< std::flush;
-		std::vector<double> r_n = subtract_vector(matrix_times_vector(M,x_old), T);
-		r = sqrt(scalar_product(r_n,r_n));
-		r_n = inverse_matrix_multiplication(LD,r_n);
-		r_n = scalar_multiplication(r_n,omega);
-		x_n = subtract_vector(x_old, r_n);
-		n_gs++;
-		x_old = x_n;
-	}
-	cout<<endl;
-	T = x_n;
-}
 /*
 Funktion die aus einem 2D-Feld einen 1D Vektor macht. Berücksichtigt auch
 die Dirichlet Randbedingungen.
 */
 vector<double> reshape_vector(vector<vector<double> > T, vector<vector<double> > u_0, vector<vector<double> > v_0){
 	vector<double> Vec_M;
+	double Diff = dt/dx/dx;
+	double Adv = dt*Pe/2./dx;
 	for(int i=0; i<T.size();i++){ //Schleife x
     for(int j=0; j<T.size();j++){ //Schleife y
       //Randbed:
       if(j==0){
-				double Sj_low = -(dt/dx/dx+dt*Pe/2./dx*v_0[i][j]);
+				double Sj_low = -Diff-Adv*v_0[i][j];
         Vec_M.push_back(T[i][j+1]-Sj_low*T_unten);//j+1
         j++;
       }
       else if(j==T.size()-2){
-				double Sj_up = -(dt/dx/dx-dt*Pe/2./dx*v_0[i][j]);
+				double Sj_up = -Diff+Adv*v_0[i][j];
         Vec_M.push_back(T[i][j]-Sj_up*T_oben);
         j++;
       }
@@ -252,32 +236,31 @@ vector<vector<double> > BCTS_implicit_Matrix(vector<vector<double> > u_0, vector
 			int j = (l%(u_0.size()-2)+k%(u_0.size()-2))%(u_0.size()-2)+1;
 			int i = (l/(u_0.size()-2)+k/(u_0.size()-2))%u_0.size();
 			//cout << k<<" "<<l <<" : "<<i<<" " <<j << endl;
-			double c = -1.;
 			double Diff= dt/dx/dx;
-			double Adv = dt*Pe/2./dx;
+			double Adv = 0.5*dt*Pe/2./dx;
 			if((k-l)==0){ // k==l => Diagonale
-				MLD[k][l]=c*(1.+4.*Diff);//S_diag
+				MLD[k][l]=(1.+4.*Diff);//S_diag
 			}
 			else if(l-k==1){ // l-k==1 => eins links von der Diagonalen
-				MLD[k][l]=c*(Diff+Adv*v_0[i][j]);//Sj_low
+				MLD[k][l]=(-Diff-Adv*v_0[i][j]);//Sj_low
 			}
 			else if(l-k==-1){ // l-k = -1 => eins rechts von der Diagonalen
-				MLD[k][l]=c*(Diff-Adv*v_0[i][j]);//Sj_up
+				MLD[k][l]=(-Diff+Adv*v_0[i][j]);//Sj_up
 			}
 			else if(l-k==u_0.size()-2){ // l-k==Ny-2 => ein Block links von der Diagonalen
 				if(i==1){//Neumann Randbed.
-					MLD[k][l]=c*(2*Diff);
+					MLD[k][l]=(-2.*Diff);
 				}
 				else{
-					MLD[k][l]=c*(Diff+Adv*u_0[i][j]);//Si_low
+					MLD[k][l]=(-Diff-Adv*u_0[i][j]);//Si_low
 				}
 			}
 			else if(l-k==-u_0.size()+2){// l-k==-(Ny-2) => ein Block rechts von der Diagonalen
 				if(i==u_0.size()-1){//Neumann Randbed.
-					MLD[k][l]=c*(2*dt/dx/dx);
+					MLD[k][l]=(-2.*Diff);
 				}
 				else{
-					MLD[k][l]=c*(Diff-Adv*u_0[i][j]);//Si_up
+					MLD[k][l]=(-Diff+Adv*u_0[i][j]);//Si_up
 				}
 			}
 

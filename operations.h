@@ -45,6 +45,9 @@ std::vector<double> scalar_multiplication(std::vector<double> x, double lambda){
   }
   return y;
 }
+double magnitude(std::vector<double> x){
+  return sqrt(scalar_product(x,x));
+}
 /*
 Funktion zum Berechnen der Differenz zweier Vektoren x-y.
 */
@@ -112,6 +115,25 @@ std::vector<double>  inverse_matrix_multiplication(std::vector<std::vector<doubl
   return y;
 }
 
+void SOR(vector<double>  &T, vector<vector<double> > M, vector<vector<double> > LD, double omega){
+	std::vector<double> x_old=T;
+	std::vector<double> x_n = x_old;
+	double r = 1000.;
+	int n_gs = 0;
+
+	while(r>0.00001){
+		std::cout<< "\r"<<n_gs << "  : "<< r<< std::flush;
+		std::vector<double> r_n = subtract_vector(matrix_times_vector(M,x_old), T);
+		r = sqrt(scalar_product(r_n,r_n));
+		r_n = inverse_matrix_multiplication(LD,r_n);
+		r_n = scalar_multiplication(r_n,omega);
+		x_n = subtract_vector(x_old, r_n);
+		n_gs++;
+		x_old = x_n;
+	}
+	std::cout<<std::endl;
+	T = x_n;
+}
 
 //M[i][j] i Spalte, j Zeile
 #endif
