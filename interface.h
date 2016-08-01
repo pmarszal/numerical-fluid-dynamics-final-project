@@ -22,11 +22,6 @@ bool b_Q;
 string dirname;
 string outname;
 
-vector<vector<double> > u_0;
-vector<vector<double> > v_0;
-vector<vector<double> > T;
-vector<vector<double> > Q;
-vector<vector<double> > T_star;
 double T_unten = 0.;
 double T_oben = 1.;
 

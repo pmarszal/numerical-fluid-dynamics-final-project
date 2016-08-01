@@ -29,7 +29,7 @@ double scalar_product(std::vector<double> x, std::vector<double> y){
     std::cout<<"Error: Vector size does not fit the vector size!"<<std::endl;
     return 1.;
   }
-  double xy = 0;
+  double xy = 0.;
   for(int i = 0; i<x.size();i++){
     xy+=x[i]*y[i];
   }
@@ -72,6 +72,18 @@ std::vector<double> add_vector(std::vector<double> x, std::vector<double> y){
     r.push_back(x[i]+y[i]);
   }
   return r;
+}
+/*
+Triangularisiere eine Matrix M
+*/
+std::vector<std::vector<double> > triangularize(std::vector<std::vector<double> > M){
+  vector<std::vector<double> > R=M;
+  for(int i =0;i<M.size(); i++){
+    for (int j = 0; j < i ; j++) {
+      R[i][j]=0.;
+    }
+  }
+  return R;
 }
 
 /*

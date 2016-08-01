@@ -46,6 +46,7 @@ int main(int argc, char ** argv){
 		for(int n=0; n < t_fin/dt; n++){
 			FTCS(T,u_0,v_0);
 			if(i_t<i_t_max){
+				//Snapshots machen
 				if( (n+1)*dt >= t_snap[i_t] && (n+1)*dt<t_snap[i_t+1]){
 					ostringstream snap_name;
 					snap_name <<dirname<< (n+1)*dt << "_" << Pe << "_"<< Nx<<"_"<<Ny<<"_"<<dt<<"_"<<b_Q<<".txt";
@@ -64,6 +65,7 @@ int main(int argc, char ** argv){
 			outfile << n*dt << " " << SSE(T,T_star)<<endl;
 			FTCS_with_Q(T,u_0,v_0, Q);
 			if(i_t<i_t_max-1){
+				//Snapshots machen
 				if( (n+1)*dt >= t_snap[i_t] && (n+1)*dt<t_snap[i_t+1]){
 					ostringstream snap_name;
 					snap_name <<dirname<< (n+1)*dt << "_" << Pe << "_"<< Nx<<"_"<<Ny<<"_"<<dt<<"_"<<b_Q<<".txt";
