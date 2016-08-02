@@ -7,6 +7,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <vector>
+#include <iomanip>
 using namespace std;
 
 bool DEBUG=false;
@@ -159,6 +160,7 @@ void print_vector(std::vector<double> x){
 Gibt eine Matrix ins Terminal aus (zum Debuggen).
 */
 void print_matrix(std::vector<std::vector< double> > T){
+	//std::cout<<std::setprecision(2);
 	for(int j = 0; j<T.size(); j++){
 
 		for(int i=0;i<T.size();i++){

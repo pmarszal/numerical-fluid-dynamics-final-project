@@ -122,7 +122,7 @@ void SOR(vector<double>  &T, vector<vector<double> > M, vector<vector<double> > 
 	int n_gs = 0;
 
 	while(r>abbruch){
-		std::cout<< "\r"<<n_gs << "  : "<< r<< std::flush;
+		//std::cout<< "\r"<<n_gs << "  : "<< r<< std::flush;
 		std::vector<double> r_n = subtract_vector(matrix_times_vector(M,x_old), T);
 		r = sqrt(scalar_product(r_n,r_n));
 		r_n = inverse_matrix_multiplication(LD,r_n);
@@ -131,8 +131,17 @@ void SOR(vector<double>  &T, vector<vector<double> > M, vector<vector<double> > 
 		n_gs++;
 		x_old = x_n;
 	}
-	std::cout<<std::endl;
+	//std::cout<<std::endl;
 	T = x_n;
+}
+vector<vector<double> > transpose(vector<vector<double> > M){
+  vector<vector<double> > T = M;
+  for(int k=0;k<M.size();k++){
+    for(int l=0;l<M.size();l++){
+      T[k][l] = M[l][k];
+    }
+  }
+  return T;
 }
 
 //M[i][j] i Spalte, j Zeile

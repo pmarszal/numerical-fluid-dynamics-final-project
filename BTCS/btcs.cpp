@@ -25,8 +25,12 @@ int main(int argc, char** argv){
   std::vector<double> T_Vec = reshape_vector(T, u_0, v_0);
   print_vector(T_Vec);
   //Calculate the implicit Matrix
+
   std::vector<std::vector<double> > M = BCTS_implicit_Matrix(u_0,v_0);
+
   std::vector<std::vector<double> > LD = triangularize(M);
+  print_matrix(M);
+
 /*
   cout << "Dominance\n";
   for(int i = 0;i<T.size(); i++){
@@ -65,7 +69,6 @@ int main(int argc, char** argv){
 
   int i_t = 0;
   for(int n=0; n*dt<t_fin; n++){
-    cout << "Time:" << n*dt<< ", Iteration: "<<std::endl;
     SOR(T_Vec,M,LD, omega, 0.0001);
     //Snapshots machen
     if( (n+1)*dt >= t_snap[i_t] && (n+1)*dt<t_snap[i_t+1]){
@@ -79,7 +82,7 @@ int main(int argc, char** argv){
   }
   T=shape_back(T_Vec, T_unten, T_oben);
   //print_array(T);
-  save_data(T,"test.txt");
+  save_data(T,"aktuell.txt");
   return 0;
 }
 //M[i][j] i Spalte, j Zeile

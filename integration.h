@@ -188,12 +188,12 @@ vector<double> reshape_vector(vector<vector<double> > T, vector<vector<double> >
     for(int j=0; j<T.size();j++){ //Schleife y
       //Randbed:
       if(j==0){
-				double Sj_low = -Diff-Adv*v_0[i][j];
+				double Sj_low = -Diff-Adv*v_0[i][j+1];
         Vec_M.push_back(T[i][j+1]-Sj_low*T_unten);//j+1
         j++;
       }
       else if(j==T.size()-2){
-				double Sj_up = -Diff+Adv*v_0[i][j+1];
+				double Sj_up = -Diff+Adv*v_0[i][j];
         Vec_M.push_back(T[i][j]-Sj_up*T_oben);
         j++;
       }
@@ -233,8 +233,8 @@ vector<vector<double> > BCTS_implicit_Matrix(vector<vector<double> > u_0, vector
 	//Schreibe die Komponenten der DifferenzenGl. in die Matrix.
 	for(int k=0; k<MLD.size();k++){
 		for(int l=0;l<MLD.size();l++){
-			int j = (l%(u_0.size()-2)+k%(u_0.size()-2))%(u_0.size()-2)+1;
-			int i = (l/(u_0.size()-2)+k/(u_0.size()-2))%u_0.size();
+			int j = (k%(u_0.size()-2))%(u_0.size()-2)+1;
+			int i = (k/(u_0.size()-2))%u_0.size();
 			//cout << k<<" "<<l <<" : "<<i<<" " <<j << endl;
 			double Diff= dt/dx/dx;
 			double Adv = dt*Pe/2./dx;
@@ -242,25 +242,29 @@ vector<vector<double> > BCTS_implicit_Matrix(vector<vector<double> > u_0, vector
 				MLD[k][l]=(1.+4.*Diff);//S_diag
 			}
 			else if(l-k==1){ // l-k==1 => eins links von der Diagonalen
-				MLD[k][l]=(-Diff-Adv*v_0[i][j-1]);//Sj_low
+				if(j!=u_0.size()-2){//An den Dirichlet Randbedingungen ist die Matrix 0
+					MLD[k][l]=(-Diff-Adv*v_0[i][j+1]);//Sj_low
+				}//Nur weil es nur eins entfernt ist heißt es nicht dass es gekoppelt ist hierdran
 			}
 			else if(l-k==-1){ // l-k = -1 => eins rechts von der Diagonalen
-				MLD[k][l]=(-Diff+Adv*v_0[i][j+1]);//Sj_up
+				if(j!=1){//An den Dirichlet Randbedingungen ist die Matrix 0
+					MLD[k][l]=(-Diff+Adv*v_0[i][j-1]);//Sj_up
+				}
 			}
 			else if(l-k==u_0.size()-2){ // l-k==Ny-2 => ein Block links von der Diagonalen
 				if(i==0){//Neumann Randbed.
 					MLD[k][l]=(-2.*Diff);
 				}
-				else{
-					MLD[k][l]=(-Diff-Adv*u_0[i-1][j]);//Si_low
+				else if(i!=u_0.size()-1){
+					MLD[k][l]=(-Diff-Adv*u_0[i+1][j]);//Si_low
 				}
 			}
 			else if(l-k==-u_0.size()+2){// l-k==-(Ny-2) => ein Block rechts von der Diagonalen
 				if(i==u_0.size()-1){//Neumann Randbed.
 					MLD[k][l]=(-2.*Diff);
 				}
-				else{
-					MLD[k][l]=(-Diff+Adv*u_0[i+1][j]);//Si_up
+				else if(i!= 0){
+					MLD[k][l]=(-Diff+Adv*u_0[i-1][j]);//Si_up
 				}
 			}
 
