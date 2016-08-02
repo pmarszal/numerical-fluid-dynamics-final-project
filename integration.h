@@ -180,21 +180,17 @@ Zielarray, welches ihr uebergeben wird.
 Funktion die aus einem 2D-Feld einen 1D Vektor macht. Berücksichtigt auch
 die Dirichlet Randbedingungen.
 */
-vector<double> reshape_vector(vector<vector<double> > T, vector<vector<double> > u_0, vector<vector<double> > v_0){
+vector<double> reshape_vector(vector<vector<double> > T){
 	vector<double> Vec_M;
-	double Diff = dt/dx/dx;
-	double Adv = dt*Pe/2./dx;
 	for(int i=0; i<T.size();i++){ //Schleife x
     for(int j=0; j<T.size();j++){ //Schleife y
       //Randbed:
       if(j==0){
-				double Sj_low = -Diff-Adv*v_0[i][j+1];
-        Vec_M.push_back(T[i][j+1]-Sj_low*T_unten);//j+1
+        Vec_M.push_back(T[i][j+1]);//j+1
         j++;
       }
       else if(j==T.size()-2){
-				double Sj_up = -Diff+Adv*v_0[i][j];
-        Vec_M.push_back(T[i][j]-Sj_up*T_oben);
+        Vec_M.push_back(T[i][j]);
         j++;
       }
       else{
@@ -203,6 +199,26 @@ vector<double> reshape_vector(vector<vector<double> > T, vector<vector<double> >
     }
   }
 	return Vec_M;
+}
+void impose_dirichlet(vector<double>  &T, vector<vector<double> > u_0, vector<vector<double> > v_0){
+	double Diff = dt/dx/dx;
+	double Adv = dt*Pe/2./dx;
+	for(int k=0; k<T.size();k++){	//Iteriere über das vektorisierte T-feld
+
+		int j = k%(u_0.size()-2)+1;	//Berechne die Orts-koordinaten
+		int i = k/(u_0.size()-2)%u_0.size();
+
+		if(j==1){	//Wenn j==1 dann entspricht T(k) dem Gitterpunkt, der an den oberen
+							//Rand gekoppelt ist.
+							//
+			T[k]=T[k]+(Diff+Adv*v_0[i][v_0.size()-2])*T_unten;
+		}
+		else if(j==u_0.size()-2){//Wenn j==Ny-2 dann entspricht T(k) dem Gitterpunkt,
+														//der an den unteren Rand gekoppelt ist.
+														//
+			T[k]=T[k]+(+Diff-Adv*v_0[i][1])*T_oben;
+		}
+	}
 }
 
 vector<vector<double> > shape_back(vector<double> T, double T_low, double T_high){
@@ -235,69 +251,47 @@ vector<vector<double> > BCTS_implicit_Matrix(vector<vector<double> > u_0, vector
 		for(int l=0;l<MLD.size();l++){
 			int j = (k%(u_0.size()-2))%(u_0.size()-2)+1;
 			int i = (k/(u_0.size()-2))%u_0.size();
-			//cout << k<<" "<<l <<" : "<<i<<" " <<j << endl;
 			double Diff= dt/dx/dx;
 			double Adv = dt*Pe/2./dx;
 			if((k-l)==0){ // k==l => Diagonale
 				MLD[k][l]=(1.+4.*Diff);//S_diag
 			}
 			else if(l-k==1){ // l-k==1 => eins links von der Diagonalen
-				if(j!=u_0.size()-2){//An den Dirichlet Randbedingungen ist die Matrix 0
-					MLD[k][l]=(-Diff-Adv*v_0[i][j+1]);//Sj_low
-				}//Nur weil es nur eins entfernt ist heißt es nicht dass es gekoppelt ist hierdran
+				if(j!=u_0.size()-2){	//Bedeutet, dass das Diagonalelement hierzu örtlich am anderen Ende liegt,
+															//also nicht gekoppelt ist an diesen Eintrag. => 0.
+															//Abfrage betrachtet nur an die Diagonale gekoppelte Gitterpunkte.
+					MLD[k][l]=(-Diff-Adv*v_0[i][j+1]);//Geschwindigkeit am Ort des rechten Eintrags
+				}
 			}
-			else if(l-k==-1){ // l-k = -1 => eins rechts von der Diagonalen
-				if(j!=1){//An den Dirichlet Randbedingungen ist die Matrix 0
-					MLD[k][l]=(-Diff+Adv*v_0[i][j-1]);//Sj_up
+			else if(l-k==-1){ // l-k == -1 => eins rechts von der Diagonalen
+				if(j!=1){	//Genauso wie eins drüber.
+					MLD[k][l]=(-Diff+Adv*v_0[i][j-1]);//Geschwindigkeit am Ort des linken Eintrags
 				}
 			}
 			else if(l-k==u_0.size()-2){ // l-k==Ny-2 => ein Block links von der Diagonalen
-				if(i==0){//Neumann Randbed.
+				if(i==u_0.size()-2){	//Das bedeutet, dass das Diagonalelement T(N,j) ist.
+															//Die Neumann Randbedingungen liefern in der Gleichung für
+															//T(N,j) den Term -2*Diff*T(N-1,j).
 					MLD[k][l]=(-2.*Diff);
 				}
-				else if(i!=u_0.size()-1){
-					MLD[k][l]=(-Diff-Adv*u_0[i+1][j]);//Si_low
+				else if(i!=u_0.size()-1){	//Element muss an die Diagonale gekoppelt sein
+					MLD[k][l]=(-Diff-Adv*u_0[i+1][j]);
 				}
+				else{MLD[k][l]=0;}
 			}
-			else if(l-k==-u_0.size()+2){// l-k==-(Ny-2) => ein Block rechts von der Diagonalen
-				if(i==u_0.size()-1){//Neumann Randbed.
+			else if(l-k==-u_0.size()+2){	// l-k==-(Ny-2) => ein Block rechts von der Diagonalen
+				if(i==1){	//Das bedeutet, dass das Diagonalelement T(0,j) ist.
+									//Die Neumann Randbedingungen liefern in der Gleichung für
+									//T(0,j) den Term -2*Diff*T(1,j).
 					MLD[k][l]=(-2.*Diff);
 				}
-				else if(i!= 0){
-					MLD[k][l]=(-Diff+Adv*u_0[i-1][j]);//Si_up
+				else if(i!= 0){	//Element muss an die Diagonale gekoppelt sein
+					MLD[k][l]=(-Diff+Adv*u_0[i-1][j]);
 				}
+				else{MLD[k][l]=0;}
 			}
+			else{MLD[k][l]=0;}
 
-		}
-	}
-	return MLD;
-}
-vector<vector<double> > GaussSeidel_Matrix(vector<vector<double> > u_0, vector<vector<double> > v_0){
-	//Create (L+D)-Matrix
-	vector<double> xtemp((u_0.size())*(u_0.size()-2), 0.0);
-	vector<vector<double> > MLD((u_0.size())*(u_0.size()-2),xtemp);
-	//M[k][l] k Spalte, l Zeile
-
-	//Schreibe die Komponenten der DifferenzenGl. in die Matrix.
-	for(int l=0;l<MLD.size();l++){
-		for(int k=0; k<=l;k++){
-			int j = (l%(u_0.size()-2)+k%(u_0.size()-2))%(u_0.size()-2)+1;
-			int i = (l/(u_0.size()-2)+k/(u_0.size()-2))%u_0.size();
-			if(-(k-l)==0){
-				MLD[k][l]=(1.+4*dt/dx/dx);//S_diag
-			}
-			else if(-(k-l)==1){
-				MLD[k][l]=-(dt/dx/dx+dt*Pe/2./dx *v_0[i][j]);//Sj_low
-			}
-			else if(-(k-l)==-1){
-				MLD[k][l]=-(dt/dx/dx-dt*Pe/2./dx*v_0[i][j]);//Sj_up
-			}
-			else if(-(k-l)==u_0.size()-2){
-				MLD[k][l]=-(dt/dx/dx+dt*Pe/2./dx*u_0[i][j]);//Si_low
-			}
-			else if(-(k-l)==-u_0.size()+2){
-				MLD[k][l]=-(dt/dx/dx-dt*Pe/2./dx*u_0[i][j]);//Si_up
-			}
 		}
 	}
 	return MLD;

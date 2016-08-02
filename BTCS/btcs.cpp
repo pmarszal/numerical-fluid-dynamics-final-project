@@ -22,14 +22,11 @@ int main(int argc, char** argv){
   init_T(T);
 
   //Create a Vector from 2D-Field
-  std::vector<double> T_Vec = reshape_vector(T, u_0, v_0);
-  print_vector(T_Vec);
+  std::vector<double> T_Vec = reshape_vector(T);
   //Calculate the implicit Matrix
-
   std::vector<std::vector<double> > M = BCTS_implicit_Matrix(u_0,v_0);
-
   std::vector<std::vector<double> > LD = triangularize(M);
-  print_matrix(M);
+
 
 /*
   cout << "Dominance\n";
@@ -69,6 +66,7 @@ int main(int argc, char** argv){
 
   int i_t = 0;
   for(int n=0; n*dt<t_fin; n++){
+    impose_dirichlet(T_Vec,u_0,v_0);
     SOR(T_Vec,M,LD, omega, 0.0001);
     //Snapshots machen
     if( (n+1)*dt >= t_snap[i_t] && (n+1)*dt<t_snap[i_t+1]){
