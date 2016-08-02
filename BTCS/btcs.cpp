@@ -6,6 +6,7 @@
 #include "/home/marszal/Projects/Num_Str_final/interface.h"
 #include "/home/marszal/Projects/Num_Str_final/operations.h"
 #include "/home/marszal/Projects/Num_Str_final/integration.h"
+#include <ctime>
 //M[i][j] i Spalte, j Zeile
 //T[i][j] i x, j y
 
@@ -27,62 +28,37 @@ int main(int argc, char** argv){
   std::vector<std::vector<double> > M = BCTS_implicit_Matrix(u_0,v_0);
   std::vector<std::vector<double> > LD = triangularize(M);
 
-
-/*
-  cout << "Dominance\n";
-  for(int i = 0;i<T.size(); i++){
-    double sum = 0;
-    for(int j = 0;j<T.size(); j++){
-      sum+=sqrt(M[i][j]*M[i][j]);
-    }
-    sum -= sqrt(M[i][i]*M[i][i]);
-    cout << sum/sqrt(M[i][i]*M[i][i]) << "\t";
-  }
-  cout<<endl;
-*/
-//  print_matrix(M);
-//MAtrix Indizes
-/*
-  cout << "l k :  ";
-  for(int k = 0; k<M.size(); k++){if(k<10){cout << k<<"  :   ";}
-      else{
-        cout << k<<"  :  ";
-      }}
-  cout << endl;
-  for(int l=0; l<M.size();l++){
-    if(l<10){cout << l <<"   ";}
-    else{cout << l <<"  ";}
-  	for(int k=0;k<M.size();k++){
-  		int j = (l%(u_0.size()-2)+k%(u_0.size()-2))%(u_0.size()-2)+1;
-  		int i = (l/(u_0.size()-2)+k/(u_0.size()-2))%u_0.size();
-  		cout <<" : "<<i<<"," <<j<<" ";}
-      cout << endl;
-    }
-*/
-
-  double omega=1.0;
-  ofstream outfile;
-  outfile.open("iterationszahl.txt");
+  //Integration
+  long int t_start;//TIME LOG
+  time(&t_start);
 
   int i_t = 0;
   for(int n=0; n*dt<t_fin; n++){
     impose_dirichlet(T_Vec,u_0,v_0);
-    SOR(T_Vec,M,LD, omega, 0.0001);
+    SOR(T_Vec,M,LD, omega, r_end);
     //Snapshots machen
     if( (n+1)*dt >= t_snap[i_t] && (n+1)*dt<t_snap[i_t+1]){
       ostringstream snap_name;
       snap_name <<dirname<< (n+1)*dt << "_" << Pe << "_"<< Nx<<"_"<<Ny<<"_"<<dt<<"_"<<b_Q<<".txt";
       save_data(shape_back(T_Vec, T_unten,T_oben), snap_name.str().c_str());
     }
+    cout << "\r t/t_fin :  "<<n*dt<<"/"<<t_fin<<std::flush;
     if((n+1)*dt>=t_snap[i_t]){
       i_t+=1;
     }
   }
+  cout<<endl;
   T=shape_back(T_Vec, T_unten, T_oben);
+  //TIME LOG
+  long int t_finished;
+  time(&t_finished);
+  cout << "\n\n"<< t_finished-t_start<<endl;
   //print_array(T);
   save_data(T,"aktuell.txt");
   return 0;
 }
+
+
 //M[i][j] i Spalte, j Zeile
 
 /*
@@ -108,4 +84,16 @@ int main(int argc, char** argv){
     omega += 0.2;
   }
   outfile.close();
+*/
+/*
+  cout << "Dominance\n";
+  for(int i = 0;i<T.size(); i++){
+    double sum = 0;
+    for(int j = 0;j<T.size(); j++){
+      sum+=sqrt(M[i][j]*M[i][j]);
+    }
+    sum -= sqrt(M[i][i]*M[i][i]);
+    cout << sum/sqrt(M[i][i]*M[i][i]) << "\t";
+  }
+  cout<<endl;
 */

@@ -115,25 +115,25 @@ std::vector<double>  inverse_matrix_multiplication(std::vector<std::vector<doubl
   return y;
 }
 
-void SOR(vector<double>  &T, vector<vector<double> > M, vector<vector<double> > LD, double omega, double abbruch){
+int SOR(vector<double>  &T, vector<vector<double> > M, vector<vector<double> > LD, double omega, double end_r){
 	std::vector<double> x_old=T;
 	std::vector<double> x_n = x_old;
 	double r = 1000.;
 	int n_gs = 0;
 
-	while(r>abbruch){
-		//std::cout<< "\r"<<n_gs << "  : "<< r<< std::flush;
+	while(r>end_r){
 		std::vector<double> r_n = subtract_vector(matrix_times_vector(M,x_old), T);
-		r = sqrt(scalar_product(r_n,r_n));
+		r = magnitude(r_n);
 		r_n = inverse_matrix_multiplication(LD,r_n);
 		r_n = scalar_multiplication(r_n,omega);
 		x_n = subtract_vector(x_old, r_n);
 		n_gs++;
 		x_old = x_n;
 	}
-	//std::cout<<std::endl;
 	T = x_n;
+  return n_gs;
 }
+
 vector<vector<double> > transpose(vector<vector<double> > M){
   vector<vector<double> > T = M;
   for(int k=0;k<M.size();k++){

@@ -11,25 +11,40 @@
 using namespace std;
 
 bool DEBUG=false;
-int Nx;
-int Ny;
-double dt;
-double t_fin;
-double dx;
-double dy;
-double Pe;
-vector<double> t_snap;
-bool b_Q;
-string dirname;
-string outname;
 
-double T_unten = 0.;
+//Allgemeine Integrationsvariablen
+int Nx;//Anzahl der Gitterpunkte
+int Ny;
+double dt;//Zeitschrittlänge
+double t_fin;//Endzeitpunkt
+double dx;//Gitterkonstanten
+double dy;
+double Pe;//Pecletzahl
+double T_unten = 0.;//Randbedingungen
 double T_oben = 1.;
 
+//BTCS Optionen
+double r_end;
+double omega;
+
+//Integration mit Quellterm?
+bool b_Q;
+
+//Ausgabe des Feldes
+vector<double> t_snap;
+string dirname;
+//Ausgabe des Ergebnisses der Abweichung von T zu T*
+string outname;
+
+
+
 /*
-Funktion zum Ausgeben des 2D Arrays zum Debuggen.
+Funktion zum Ausgeben der Mehrdimensionalen Objekte
 */
 void print_array(vector<vector< double> > T);
+void print_vector(std::vector<double> x);
+void print_matrix(std::vector<std::vector< double> > T);
+
 /*
 Funktion zum Speichern von Ergebnissen.
 */
@@ -57,6 +72,29 @@ void print_array(vector<vector< double> > T){
 		cout << endl;
 	}
 }
+/*
+Gibt einen Vektor ins Terminal aus (zum Debuggen).
+*/
+void print_vector(std::vector<double> x){
+  for(int i = 0; i<x.size(); i++){
+    std::cout<<x[i]<<" ";
+  }
+  std::cout<<std::endl;
+}
+/*
+Gibt eine Matrix ins Terminal aus (zum Debuggen).
+*/
+void print_matrix(std::vector<std::vector< double> > T){
+	//std::cout<<std::setprecision(2);
+	for(int j = 0; j<T.size(); j++){
+
+		for(int i=0;i<T.size();i++){
+			std::cout << T[i][j] << "  ";
+		}
+		std::cout << std::endl;
+	}
+}
+
 /*
 Funktion zum Speichern des Ergebnisses
 */
@@ -121,6 +159,22 @@ void store_line(string key, string value){
 		Pe = atof(value.c_str());
 		if(DEBUG){cout << "Pe=" << Pe<< endl;}
 	}
+	else if(key==  "T_unten"){
+		T_unten = atof(value.c_str());
+		if(DEBUG){cout << "T_unten=" << T_unten<< endl;}
+	}
+	else if(key==  "T_oben"){
+		T_oben = atof(value.c_str());
+		if(DEBUG){cout << "T_oben=" << T_oben<< endl;}
+	}
+	else if(key==  "r_end"){
+		r_end = atof(value.c_str());
+		if(DEBUG){cout << "r_end=" << r_end<< endl;}
+	}
+	else if(key==  "omega"){
+		omega = atof(value.c_str());
+		if(DEBUG){cout << "omega=" << omega<< endl;}
+	}
 	else if(key==  "b_Q"){
 		b_Q = bool(atoi(value.c_str()));
 	}
@@ -147,28 +201,6 @@ void store_line(string key, string value){
 	}
 }
 
-/*
-Gibt einen Vektor ins Terminal aus (zum Debuggen).
-*/
-void print_vector(std::vector<double> x){
-  for(int i = 0; i<x.size(); i++){
-    std::cout<<x[i]<<" ";
-  }
-  std::cout<<std::endl;
-}
-/*
-Gibt eine Matrix ins Terminal aus (zum Debuggen).
-*/
-void print_matrix(std::vector<std::vector< double> > T){
-	//std::cout<<std::setprecision(2);
-	for(int j = 0; j<T.size(); j++){
-
-		for(int i=0;i<T.size();i++){
-			std::cout << T[i][j] << "  ";
-		}
-		std::cout << std::endl;
-	}
-}
 
 
 
