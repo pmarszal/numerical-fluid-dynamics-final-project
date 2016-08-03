@@ -1,11 +1,4 @@
-/*#include <iostream>
-#include <cmath>
-#include <vector>
-#include <fstream>
-#include <string>
-#include <sstream>
-#include <cstdlib>
-*/
+
 #include "/home/marszal/Projects/Num_Str_final/integration.h"
 
 

@@ -2,13 +2,6 @@
 #ifndef INTEGRATION_H
 #define INTEGRATION_H
 
-#include <iostream>
-#include <cmath>
-#include <vector>
-//#include <fstream>
-//#include <string>
-//#include <sstream>
-//#include <cstdlib>
 #include "/home/marszal/Projects/Num_Str_final/interface.h"
 #include "/home/marszal/Projects/Num_Str_final/operations.h"
 using namespace std;

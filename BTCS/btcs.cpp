@@ -1,8 +1,4 @@
-/*
-#include <iostream>
-#include <cmath>
-#include <vector>
-*/
+
 #include "/home/marszal/Projects/Num_Str_final/interface.h"
 #include "/home/marszal/Projects/Num_Str_final/operations.h"
 #include "/home/marszal/Projects/Num_Str_final/integration.h"
