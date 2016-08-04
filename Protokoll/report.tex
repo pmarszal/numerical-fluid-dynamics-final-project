@@ -35,9 +35,12 @@
 \usepackage[ngerman]{babel}
 \usepackage[utf8x]{inputenc}
 \usepackage{amsmath}
+\usepackage{nccmath}%for tiny matrices
 \usepackage{graphicx}
-\usepackage[ngerman]{cleveref}
+\usepackage{grffile}%For .s in graphics
+\usepackage[ngerman]{cleveref}%Für bessere References
 \usepackage[colorinlistoftodos]{todonotes}
+\usepackage{subcaption}%Für subfigures
 
 \setlength\parindent{0pt} %Noindent for the whole document
 
@@ -181,7 +184,7 @@ Im BTCS-Verfahren wird die Zeitableitung durch eine Rückwärtsdifferenz diskret
 \end{align}
 Führt man die Dirichlet-Randbedingungen ein so reduziert sich das Gleichungssystem auf $N_x \cdot (N_y-1)$ Gleichungen. Um die Neumann-Randbedingungen mit dem Gleichungssystem zu vereinigen betrachtet man den zentralen Differenzenquotienten an $x=0$ und $x=1$:
 \begin{align}
-  \left \frac{\partial T}{\partial x}\right|_{x=0} = \frac{T^{n}_{1,j}-T^{n}_{-1,j}}{\Delta x} = 0, \nonumber
+  \left. \frac{\partial T}{\partial x}\right|_{x=0} = \frac{T^{n}_{1,j}-T^{n}_{-1,j}}{\Delta x} = 0, \nonumber
 \end{align}
 und einem analogen Quotienten für $x=1$. Mithilfe dieser Gleichungen lassen sich die Terme $T^{n}_{-1,j}$ und $T^{n}_{N_x+2,j}$ aus dem Gleichungssystem eliminieren und somit die Neumann-Randbedingungen in die Gleichungen einbauen.
 
@@ -189,8 +192,7 @@ Um dieses System zu lösen bietet es sich an das Gitter $T^n_{i,j}$ als $N_x \cd
 Die Lösung des Systems entspricht dann einer Invertierung der Matrix $M$, die sich aus den Gleichungen als \cref{Gl:Matrix} ergibt.
 
 \begin{align}
-\resizebox{\linewidth}{!}{%
-M=\begin{pmatrix}
+M=\left(\begin{medsize}\begin{smallmatrix}
 (1.+4D)      & (v_{0,1}A-D) & 0          & ...       & -2D       & 0        &...       &&...       &&0    \\
 -(v_{0,2}A+D) & (1.+4D)      & (v_{0,2}A-D) & 0         & ...      & -2D       &0       &&...       &&0    \\
 0          &-(v_{0,3}A+D)  & (1.+4D)      &(v_{0,3}A-D) &0         &...       &       & &...       &&0 \\
@@ -198,9 +200,10 @@ M=\begin{pmatrix}
 ...          &  ...       &-(u_{i,j}A+D)  &...        &-(v_{i,j}A+D)&(1.+4D)     &(v_{i,j}A-D)& ...      & (u_{i,j}A-D)&... 0\\
     ...         & ...        &...         &...        &...       &...       &...       &...&...       &&0\\
 0          &...         &            &...        &           &         &-2D          &...       &-(v_{N_x+1,N_y}A+D) &(1.+4D)
-\end{pmatrix}\label{Gl:Matrix}
-}
+\end{smallmatrix}\end{medsize}\right)\label{Gl:Matrix}
 \end{align}
+
+
 
 Hierbei wurde der Vektor $\boldsymbol T^n$ so gewählt, dass die Spalten des Gitters aneinander gehängt werden, sprich die Komponenten des Vektors laufen zunächst im $j$-Index durch : $\boldsymbol T^n = \left( T^n_{0,1}, T^n_{0,2}, ..., T^n_{0,N_y}, T^n_{1,1},...,T^n_{N_x+1,N_y} \right)$.
 Die Terme $A=\frac{Pe~\Delta t}{\Delta x}$ und $D=\frac{\Delta t}{\Delta x^2}$ enstprechen den konstanten Vorfaktoren im Advektions- und Diffusionsterm.
@@ -224,11 +227,67 @@ Die Iterationsvorschrift des SOR-Algorithmus lautet:
 Für die Wärmetransportgleichung liegt der optimale Relaxationsparameter zwischen 0 und 2.
 
 
-
-
 \section{Programmstruktur}
+Zur Bearbeitung des Problems wurden die beiden Methoden, FTCS und BTCS, in zwei getrennten Programmen implementiert. Als interface mit den Programmen wurde eine Konfigurationsdatei erstellt, die es erlaubt Parameter der Algorithmen zu ändern, ohne das Programm neu komplilieren zu müssen.
+Die Interaktion mit der Konfigurationsdatei wurde in der Headerdatei \emph{interface.h} implementiert, welche zudem sämtliche Funktionen zur Ausgabe der Ergebnisse beinhaltet.
+
+Die Kernfunktionen der Integration befinden sich in der \emph{integration.h}-Datei. Diese sind die Initialisierungen der Temperaturfelder, des Quellfeldes und der Geschwindigkeitsfelder.
+Außerdem sind einzelne Zeitschritte in den Funktionen \emph{FTCS()} und \emph{FTCS\_with\_Q()} zusammengefasst. Diese nehmen als Input das Temperaturfeld (call-by-reference), die Geschwindigkeitsfelder und das Quellfeld (call-by-value).
+Die Entscheidung, welche Gleichung integriert werden soll, wird in der Konfigurationsdatei getroffen.
+
+
+Die BTCS-Methode benötigt weitere Funktionen, die von dem betrachteten Problem abhängen. Dies sind Funktionen zum transformieren des Feldes in einen Vektor und zurück (\emph{reshape\_vector()} und \emph{shape\_back()}), die Einführung der Dirichlet-Randbedingungen in den Vektor (\emph{impose\_dirichlet()}) und die Initialisierung der Matrix $M$ (\emph{BCTS\_implicit\_Matrix()}).
+
+Im BTCS Programm werden zudem algebraische Operationen benötigt, die in der Datei \emph{operations.h} definiert sind.
+Dabei handelt es sich um standard Vektor-Matrix Operationen, aber auch die Triangularisierung der $M$-Matrix (\emph{triangularize()}) und das von der Problemstellung unabhängige SOR-Verfahren (\emph{SOR()}).
+
+Innerhalb der Schleife über die Zeit wurde zudem eine Abfrage eingeführt, die zu in der Konfigurationsdatei definierten Zeitpunkten das aktuelle Temperaturfeld ausgibt.
+
+Die Darstellung der Ergebnisse wurde mittels \emph{Python-Matplotlib} durchgeführt.
+
+
+\begin{figure}\centering
+  %\input{FTCSflow.pdf_tex}
+\includegraphics[width=0.4\textheight]{FTCSflow.pdf}\caption{Flowchart der Implementierung der FTCS-Methode.}\label{fig:FTCS}
+\end{figure}
+
+\begin{figure}\centering
+  %\input{FTCSflow.pdf_tex}
+\includegraphics[width=0.4\textheight]{BTCSflow.pdf}\caption{Flowchart der Implementierung der BTCS-Methode.}\label{fig:BTCS}
+\end{figure}
 
 \section{Ergebnisse}
+Die anfängliche Betrachtung des Temperaturfeldes im Verlauf der Zeit, wie es durch die FTCS-Methode berechnet wird, liefert die Ergebnisse in \cref{fig:FTCSnaive}. Hiefür wurde eine Peclet-Zahl von $Pe~=10$ und ein Gitter von $N_x=N_y=30$ angenommen. Die Schrittweite in der Zeit beträgt $dt=0.0002$.
+
+\begin{figure}
+\centering
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0056_10_30_30_0.0002_0.txt.png}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0112_10_30_30_0.0002_0.txt.png}
+  \end{subfigure}
+  \\
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0168_10_30_30_0.0002_0.txt.png}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0224_10_30_30_0.0002_0.txt.png}
+  \end{subfigure}
+  \\
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0278_10_30_30_0.0002_0.txt.png}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0446_10_30_30_0.0002_0.txt.png}
+  \end{subfigure}
+\caption{Temperaturfeld zu verschiedenen Zeiten. Berechnet mit dem FTCS-Verfahren.}\label{fig:FTCSnaive}
+\end{figure}
+
+Allerdings muss noch überprüft werden, wie genau das Ergebnis ist, und, wie die Gittergröße sich auf die Konvergenz auswirkt.
 
 \section{Vergleich FTCS- und BTCS}
 
