@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2016.3.23)  4 AUG 2016 13:48
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2016.3.23)  4 AUG 2016 18:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -490,7 +490,20 @@ Package caption3 Info: TeX engine: e-TeX on input line 57.
 )
 \c@subfigure=\count127
 \c@subtable=\count128
-) (./report.aux)
+) (./report.aux
+
+LaTeX Warning: Label `fig:Performance1' multiply defined.
+
+
+LaTeX Warning: Label `fig:Performance1@cref' multiply defined.
+
+
+LaTeX Warning: Label `fig:FTCSnaive' multiply defined.
+
+
+LaTeX Warning: Label `fig:FTCSnaive@cref' multiply defined.
+
+)
 \openout1 = `report.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 47.
@@ -505,7 +518,7 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 47.
 LaTeX Font Info:    ... okay on input line 47.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 47.
 LaTeX Font Info:    ... okay on input line 47.
-(/usr/share/texlive/texmf-dist/tex/latex/ucs/ucsencs.def
+ (/usr/share/texlive/texmf-dist/tex/latex/ucs/ucsencs.def
 File: ucsencs.def 2011/01/21 Fixes to fontencodings LGR, T3
 )
 (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
@@ -554,31 +567,31 @@ Package pdftex.def Info: logo_1.jpg used on input line 103.
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./logo_1.jpg>]
-Overfull \hbox (7.467pt too wide) in paragraph at lines 125--130
+Overfull \hbox (7.467pt too wide) in paragraph at lines 130--135
 \OT1/cmr/m/n/12 L[]osung die-ser Art von Pro-blem ein-ge-setzt wer-den k[]onnen
  sind \OT1/cmr/m/it/12 Finite-Volumen-
  []
 
 [1]
-Overfull \hbox (29.45816pt too wide) in paragraph at lines 146--148
+Overfull \hbox (29.45816pt too wide) in paragraph at lines 151--153
 \OT1/cmr/m/n/12 Durch Kom-bi-na-tio-nen un-ter-schied-li-cher Dif-fe-ren-zen-qu
 o-ti-en-ten k[]onnen N[]aherungen
  []
 
 [2]
-Overfull \hbox (13.50362pt too wide) in paragraph at lines 184--186
+Overfull \hbox (13.50362pt too wide) in paragraph at lines 189--191
 \OT1/cmr/m/n/12 chungs-sys-tem auf $\OML/cmm/m/it/12 N[] \OMS/cmsy/m/n/12 ^^A \
 OT1/cmr/m/n/12 (\OML/cmm/m/it/12 N[] \OMS/cmsy/m/n/12 ^^@ \OT1/cmr/m/n/12 1)$ G
 lei-chun-gen. Um die Neumann-Randbedingungen
  []
 
 
-Overfull \hbox (82.67627pt too wide) in paragraph at lines 204--204
+Overfull \hbox (82.67627pt too wide) in paragraph at lines 209--209
 [] 
  []
 
 [3] [4]
-Overfull \hbox (4.09079pt too wide) in paragraph at lines 246--247
+Overfull \hbox (4.09079pt too wide) in paragraph at lines 251--252
 []\OT1/cmr/m/n/12 Die Dar-stel-lung der Er-geb-nis-se wur-de mit-tels \OT1/cmr/
 m/it/12 Python-Matplotlib \OT1/cmr/m/n/12 durch-gef[]uhrt. 
  []
@@ -586,13 +599,13 @@ m/it/12 Python-Matplotlib \OT1/cmr/m/n/12 durch-gef[]uhrt.
 <FTCSflow.pdf, id=43, 438.22595pt x 387.64612pt>
 File: FTCSflow.pdf Graphic file (type pdf)
  <use FTCSflow.pdf>
-Package pdftex.def Info: FTCSflow.pdf used on input line 251.
+Package pdftex.def Info: FTCSflow.pdf used on input line 256.
 (pdftex.def)             Requested size: 219.39665pt x 194.071pt.
 
 <BTCSflow.pdf, id=44, 488.54398pt x 582.61334pt>
 File: BTCSflow.pdf Graphic file (type pdf)
  <use BTCSflow.pdf>
-Package pdftex.def Info: BTCSflow.pdf used on input line 256.
+Package pdftex.def Info: BTCSflow.pdf used on input line 261.
 (pdftex.def)             Requested size: 219.39665pt x 261.64018pt.
  [5]
 [6 <./FTCSflow.pdf> <./BTCSflow.pdf
@@ -608,10 +621,10 @@ File: /home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0056_10_30_30_0.000
 <use /home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0056_10_30_30_0.0002
 _0.txt.png>
 Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.
-0056_10_30_30_0.0002_0.txt.png used on input line 265.
+0056_10_30_30_0.0002_0.txt.png used on input line 270.
 (pdftex.def)             Requested size: 215.27693pt x 143.52069pt.
 
-Overfull \hbox (28.0786pt too wide) in paragraph at lines 265--266
+Overfull \hbox (28.0786pt too wide) in paragraph at lines 270--271
 [][] 
  []
 
@@ -624,10 +637,10 @@ File: /home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0112_10_30_30_0.000
 <use /home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0112_10_30_30_0.0002
 _0.txt.png>
 Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.
-0112_10_30_30_0.0002_0.txt.png used on input line 269.
+0112_10_30_30_0.0002_0.txt.png used on input line 274.
 (pdftex.def)             Requested size: 215.27693pt x 143.52069pt.
 
-Overfull \hbox (28.0786pt too wide) in paragraph at lines 269--270
+Overfull \hbox (28.0786pt too wide) in paragraph at lines 274--275
 [][] 
  []
 
@@ -640,10 +653,10 @@ File: /home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0168_10_30_30_0.000
 <use /home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0168_10_30_30_0.0002
 _0.txt.png>
 Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.
-0168_10_30_30_0.0002_0.txt.png used on input line 273.
+0168_10_30_30_0.0002_0.txt.png used on input line 278.
 (pdftex.def)             Requested size: 215.27693pt x 143.52069pt.
 
-Overfull \hbox (28.0786pt too wide) in paragraph at lines 273--274
+Overfull \hbox (28.0786pt too wide) in paragraph at lines 278--279
 [][] 
  []
 
@@ -656,10 +669,10 @@ File: /home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0224_10_30_30_0.000
 <use /home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0224_10_30_30_0.0002
 _0.txt.png>
 Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.
-0224_10_30_30_0.0002_0.txt.png used on input line 277.
+0224_10_30_30_0.0002_0.txt.png used on input line 282.
 (pdftex.def)             Requested size: 215.27693pt x 143.52069pt.
 
-Overfull \hbox (28.0786pt too wide) in paragraph at lines 277--278
+Overfull \hbox (28.0786pt too wide) in paragraph at lines 282--283
 [][] 
  []
 
@@ -672,10 +685,10 @@ File: /home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0278_10_30_30_0.000
 <use /home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0278_10_30_30_0.0002
 _0.txt.png>
 Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.
-0278_10_30_30_0.0002_0.txt.png used on input line 281.
+0278_10_30_30_0.0002_0.txt.png used on input line 286.
 (pdftex.def)             Requested size: 215.27693pt x 143.52069pt.
 
-Overfull \hbox (28.0786pt too wide) in paragraph at lines 281--282
+Overfull \hbox (28.0786pt too wide) in paragraph at lines 286--287
 [][] 
  []
 
@@ -688,12 +701,175 @@ File: /home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0446_10_30_30_0.000
 <use /home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0446_10_30_30_0.0002
 _0.txt.png>
 Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.
-0446_10_30_30_0.0002_0.txt.png used on input line 285.
+0446_10_30_30_0.0002_0.txt.png used on input line 290.
 (pdftex.def)             Requested size: 215.27693pt x 143.52069pt.
 
-Overfull \hbox (28.0786pt too wide) in paragraph at lines 285--286
+Overfull \hbox (28.0786pt too wide) in paragraph at lines 290--291
 [][] 
  []
+
+
+LaTeX Warning: Reference `eq:PDGL_Quell' on page 1 undefined on input line 296.
+
+
+
+LaTeX Warning: Reference `fig:Performance2' on page 1 undefined on input line 3
+00.
+
+
+</home/marszal/Projects/Num_Str_final/FTCS/plots/sse_over_time.pdf, id=88, 433.
+62pt x 289.08pt>
+File: /home/marszal/Projects/Num_Str_final/FTCS/plots/sse_over_time.pdf Graphic
+ file (type pdf)
+
+<use /home/marszal/Projects/Num_Str_final/FTCS/plots/sse_over_time.pdf>
+Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/sse_ov
+er_time.pdf used on input line 304.
+(pdftex.def)             Requested size: 312.00119pt x 208.0095pt.
+
+</home/marszal/Projects/Num_Str_final/FTCS/plots/SSE_at_end.pdf, id=89, 433.62p
+t x 289.08pt>
+File: /home/marszal/Projects/Num_Str_final/FTCS/plots/SSE_at_end.pdf Graphic fi
+le (type pdf)
+
+<use /home/marszal/Projects/Num_Str_final/FTCS/plots/SSE_at_end.pdf>
+Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/SSE_at
+_end.pdf used on input line 308.
+(pdftex.def)             Requested size: 312.00119pt x 208.0095pt.
+
+
+LaTeX Warning: Reference `fig:A4' on page 1 undefined on input line 313.
+
+
+</home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2/0.005_2_30_30_0.0002_0.
+txt.png, id=90, 433.62pt x 289.08pt>
+File: /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2/0.005_2_30_30_0.00
+02_0.txt.png Graphic file (type png)
+
+<use /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2/0.005_2_30_30_0.000
+2_0.txt.png>
+Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2
+/0.005_2_30_30_0.0002_0.txt.png used on input line 320.
+(pdftex.def)             Requested size: 215.27693pt x 143.52069pt.
+
+Overfull \hbox (28.0786pt too wide) in paragraph at lines 320--321
+[][] 
+ []
+
+
+</home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/0.005_10_30_30_0.0002_
+0.txt.png, id=91, 433.62pt x 289.08pt>
+File: /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/0.005_10_30_30_0.
+0002_0.txt.png Graphic file (type png)
+
+<use /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/0.005_10_30_30_0.0
+002_0.txt.png>
+Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe1
+0/0.005_10_30_30_0.0002_0.txt.png used on input line 324.
+(pdftex.def)             Requested size: 215.27693pt x 143.52069pt.
+
+Overfull \hbox (28.0786pt too wide) in paragraph at lines 324--325
+[][] 
+ []
+
+
+</home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2/0.05_2_30_30_0.0002_0.t
+xt.png, id=92, 433.62pt x 289.08pt>
+File: /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2/0.05_2_30_30_0.000
+2_0.txt.png Graphic file (type png)
+
+<use /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2/0.05_2_30_30_0.0002
+_0.txt.png>
+Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2
+/0.05_2_30_30_0.0002_0.txt.png used on input line 328.
+(pdftex.def)             Requested size: 215.27693pt x 143.52069pt.
+
+Overfull \hbox (28.0786pt too wide) in paragraph at lines 328--329
+[][] 
+ []
+
+
+</home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/0.05_10_30_30_0.0002_0
+.txt.png, id=93, 433.62pt x 289.08pt>
+File: /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/0.05_10_30_30_0.0
+002_0.txt.png Graphic file (type png)
+
+<use /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/0.05_10_30_30_0.00
+02_0.txt.png>
+Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe1
+0/0.05_10_30_30_0.0002_0.txt.png used on input line 332.
+(pdftex.def)             Requested size: 215.27693pt x 143.52069pt.
+
+Overfull \hbox (28.0786pt too wide) in paragraph at lines 332--333
+[][] 
+ []
+
+
+</home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2/0.5_2_30_30_0.0002_0.tx
+t.png, id=94, 433.62pt x 289.08pt>
+File: /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2/0.5_2_30_30_0.0002
+_0.txt.png Graphic file (type png)
+
+<use /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2/0.5_2_30_30_0.0002_
+0.txt.png>
+Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2
+/0.5_2_30_30_0.0002_0.txt.png used on input line 336.
+(pdftex.def)             Requested size: 215.27693pt x 143.52069pt.
+
+Overfull \hbox (28.0786pt too wide) in paragraph at lines 336--337
+[][] 
+ []
+
+
+</home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/0.5_10_30_30_0.0002_0.
+txt.png, id=95, 433.62pt x 289.08pt>
+File: /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/0.5_10_30_30_0.00
+02_0.txt.png Graphic file (type png)
+
+<use /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/0.5_10_30_30_0.000
+2_0.txt.png>
+Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe1
+0/0.5_10_30_30_0.0002_0.txt.png used on input line 340.
+(pdftex.def)             Requested size: 215.27693pt x 143.52069pt.
+
+Overfull \hbox (28.0786pt too wide) in paragraph at lines 340--341
+[][] 
+ []
+
+
+</home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2/1_2_30_30_0.0002_0.txt.
+png, id=96, 433.62pt x 289.08pt>
+File: /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2/1_2_30_30_0.0002_0
+.txt.png Graphic file (type png)
+
+<use /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2/1_2_30_30_0.0002_0.
+txt.png>
+Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2
+/1_2_30_30_0.0002_0.txt.png used on input line 344.
+(pdftex.def)             Requested size: 215.27693pt x 143.52069pt.
+
+Overfull \hbox (28.0786pt too wide) in paragraph at lines 344--345
+[][] 
+ []
+
+
+</home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/1_10_30_30_0.0002_0.tx
+t.png, id=97, 433.62pt x 289.08pt>
+File: /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/1_10_30_30_0.0002
+_0.txt.png Graphic file (type png)
+
+<use /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/1_10_30_30_0.0002_
+0.txt.png>
+Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe1
+0/1_10_30_30_0.0002_0.txt.png used on input line 348.
+(pdftex.def)             Requested size: 215.27693pt x 143.52069pt.
+
+Overfull \hbox (28.0786pt too wide) in paragraph at lines 348--349
+[][] 
+ []
+
+
+LaTeX Warning: Float too large for page by 67.58275pt on input line 351.
 
 [7] [8 </home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0056_10_30_30_0.0
 002_0.txt.png> </home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0112_10_3
@@ -701,18 +877,119 @@ Overfull \hbox (28.0786pt too wide) in paragraph at lines 285--286
 168_10_30_30_0.0002_0.txt.png> </home/marszal/Projects/Num_Str_final/FTCS/plots
 /all/0.0224_10_30_30_0.0002_0.txt.png> </home/marszal/Projects/Num_Str_final/FT
 CS/plots/all/0.0278_10_30_30_0.0002_0.txt.png> </home/marszal/Projects/Num_Str_
-final/FTCS/plots/all/0.0446_10_30_30_0.0002_0.txt.png>] (./report.aux
+final/FTCS/plots/all/0.0446_10_30_30_0.0002_0.txt.png>] [9 </home/marszal/Proje
+cts/Num_Str_final/FTCS/plots/sse_over_time.pdf> </home/marszal/Projects/Num_Str
+_final/FTCS/plots/SSE_at_end.pdf
+
+pdfTeX warning: pdflatex (file /home/marszal/Projects/Num_Str_final/FTCS/plots/
+SSE_at_end.pdf): PDF inclusion: multiple pdfs with page group included in a sin
+gle page
+>]
+</home/marszal/Projects/Num_Str_final/FTCS/plots/A5/theoretical.pdf, id=188, 43
+3.62pt x 289.08pt>
+File: /home/marszal/Projects/Num_Str_final/FTCS/plots/A5/theoretical.pdf Graphi
+c file (type pdf)
+
+<use /home/marszal/Projects/Num_Str_final/FTCS/plots/A5/theoretical.pdf>
+Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/A5/the
+oretical.pdf used on input line 371.
+(pdftex.def)             Requested size: 390.0pt x 260.01079pt.
+
+[10] [11 </home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2/0.005_2_30_30_
+0.0002_0.txt.png> </home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/0.00
+5_10_30_30_0.0002_0.txt.png> </home/marszal/Projects/Num_Str_final/FTCS/plots/A
+4/Pe2/0.05_2_30_30_0.0002_0.txt.png> </home/marszal/Projects/Num_Str_final/FTCS
+/plots/A4/Pe10/0.05_10_30_30_0.0002_0.txt.png> </home/marszal/Projects/Num_Str_
+final/FTCS/plots/A4/Pe2/0.5_2_30_30_0.0002_0.txt.png> </home/marszal/Projects/N
+um_Str_final/FTCS/plots/A4/Pe10/0.5_10_30_30_0.0002_0.txt.png> </home/marszal/P
+rojects/Num_Str_final/FTCS/plots/A4/Pe2/1_2_30_30_0.0002_0.txt.png> </home/mars
+zal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/1_10_30_30_0.0002_0.txt.png>]
+[12 </home/marszal/Projects/Num_Str_final/FTCS/plots/A5/theoretical.pdf>]
+</home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe0.1.pdf, id=25
+7, 433.62pt x 289.08pt>
+File: /home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe0.1.pdf G
+raphic file (type pdf)
+
+<use /home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe0.1.pdf>
+Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Div
+ergence_Pe0.1.pdf used on input line 391.
+(pdftex.def)             Requested size: 195.0pt x 130.00098pt.
+
+</home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe1.0.pdf, id=25
+8, 433.62pt x 289.08pt>
+File: /home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe1.0.pdf G
+raphic file (type pdf)
+
+<use /home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe1.0.pdf>
+Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Div
+ergence_Pe1.0.pdf used on input line 396.
+(pdftex.def)             Requested size: 195.0pt x 130.00098pt.
+
+</home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe10.0.pdf, id=2
+59, 433.62pt x 289.08pt>
+File: /home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe10.0.pdf 
+Graphic file (type pdf)
+
+<use /home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe10.0.pdf>
+Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Div
+ergence_Pe10.0.pdf used on input line 401.
+(pdftex.def)             Requested size: 195.0pt x 130.00098pt.
+
+</home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe20.0.pdf, id=2
+60, 433.62pt x 289.08pt>
+File: /home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe20.0.pdf 
+Graphic file (type pdf)
+
+<use /home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe20.0.pdf>
+Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Div
+ergence_Pe20.0.pdf used on input line 406.
+(pdftex.def)             Requested size: 195.0pt x 130.00098pt.
+
+</home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe100.0.pdf, id=
+261, 433.62pt x 289.08pt>
+File: /home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe100.0.pdf
+ Graphic file (type pdf)
+
+<use /home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe100.0.pdf>
+Package pdftex.def Info: /home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Div
+ergence_Pe100.0.pdf used on input line 411.
+(pdftex.def)             Requested size: 195.0pt x 130.00098pt.
+[13] [14 </home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe0.1.p
+df> </home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe1.0.pdf
+
+pdfTeX warning: pdflatex (file /home/marszal/Projects/Num_Str_final/FTCS/plots/
+A5/Divergence_Pe1.0.pdf): PDF inclusion: multiple pdfs with page group included
+ in a single page
+> </home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe10.0.pdf
+
+pdfTeX warning: pdflatex (file /home/marszal/Projects/Num_Str_final/FTCS/plots/
+A5/Divergence_Pe10.0.pdf): PDF inclusion: multiple pdfs with page group include
+d in a single page
+> </home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe20.0.pdf
+
+pdfTeX warning: pdflatex (file /home/marszal/Projects/Num_Str_final/FTCS/plots/
+A5/Divergence_Pe20.0.pdf): PDF inclusion: multiple pdfs with page group include
+d in a single page
+> </home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe100.0.pdf
+
+pdfTeX warning: pdflatex (file /home/marszal/Projects/Num_Str_final/FTCS/plots/
+A5/Divergence_Pe100.0.pdf): PDF inclusion: multiple pdfs with page group includ
+ed in a single page
+>] (./report.aux
 Package cleveref Info: loaded `ngerman' language definitions on input line 3.
 )
 
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 14942 strings out of 494976
- 276932 string characters out of 6179137
+ 15029 strings out of 494976
+ 282695 string characters out of 6179137
  360962 words of memory out of 5000000
- 17879 multiletter control sequences out of 15000+600000
+ 17966 multiletter control sequences out of 15000+600000
  13990 words of font info for 49 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  63i,17n,94p,464b,596s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -736,10 +1013,10 @@ st/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type
 1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
 c/amsfonts/cm/cmti12.pfb>
-Output written on report.pdf (9 pages, 771432 bytes).
+Output written on report.pdf (15 pages, 1382970 bytes).
 PDF statistics:
- 167 PDF objects out of 1000 (max. 8388607)
- 110 compressed objects within 2 object streams
+ 527 PDF objects out of 1000 (max. 8388607)
+ 230 compressed objects within 3 object streams
  0 named destinations out of 1000 (max. 500000)
- 58 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 138 words of extra memory for PDF output out of 10000 (max. 10000000)
 

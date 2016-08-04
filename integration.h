@@ -242,7 +242,7 @@ vector<vector<double> > BCTS_implicit_Matrix(vector<vector<double> > u_0, vector
 	//Schreibe die Komponenten der DifferenzenGl. in die Matrix.
 	for(int k=0; k<MLD.size();k++){
 		for(int l=0;l<MLD.size();l++){
-			int j = (k%(u_0.size()-2))%(u_0.size()-2)+1;
+			int j = (k%(u_0.size()-2))+1;
 			int i = (k/(u_0.size()-2))%u_0.size();
 			double Diff= dt/dx/dx;
 			double Adv = dt*Pe/2./dx;

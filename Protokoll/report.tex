@@ -121,6 +121,11 @@ Your abstract.
   \frac{\partial T(\boldsymbol x, t)}{\partial t} + \text{Pe}~ \boldsymbol{u}_0\cdot \nabla T(\boldsymbol x, t) = \nabla^2 T(\boldsymbol x, t). \label{Gl:PDGL}
 \end{align}
 
+
+\begin{align}
+  \frac{\partial T(\boldsymbol x, t)}{\partial t} + \text{Pe}~ \boldsymbol{u}_0\cdot \nabla T(\boldsymbol x, t) = \nabla^2 T(\boldsymbol x, t) + Q(x,y). \label{Gl:PDGL_Quell}
+\end{align}
+
 \section{Methoden}
 Zur Simulation von Strömungsmechanikproblemen kommen eine Vielzahl verschiedener Verfahren in Frage.
 Ein konzeptionell simples Verfahren, das häufig Anwendung findet, ist die \emph{Finite-Differenzen-Methode}.
@@ -286,8 +291,128 @@ Die anfängliche Betrachtung des Temperaturfeldes im Verlauf der Zeit, wie es du
   \end{subfigure}
 \caption{Temperaturfeld zu verschiedenen Zeiten. Berechnet mit dem FTCS-Verfahren.}\label{fig:FTCSnaive}
 \end{figure}
-
+\subsection{Fehler der FTCS-Lösung}
 Allerdings muss noch überprüft werden, wie genau das Ergebnis ist, und, wie die Gittergröße sich auf die Konvergenz auswirkt.
+Dazu wird \cref{eq:PDGL_Quell} benutzt. Da die stabile stationäre Lösung dieser Gleichung bekannt ist verfügt man über ein Referenzfeld gegen das die FTCS-Näherung konvergieren müsste.
+In \cref{fig:Performance1} ist die quadratische Abweichung von $T^*$ als Funktion der Zeit für verschiedene Gittergrößen dargestellt.
+Es ist sichtbar, dass die numerische Lösung gegen einen konstanten Fehler konvergiert.
+Eine Verfeinerung des Gitters von $N=5$ auf $10$ führt zu einer drastischen Verbesserung der Genauigkeit der Lösung, da der Fehler um fast eine Größenordnung sinkt. Bei weiterer Verfeinerung des Gitters kann ein weiterer Zuwachs an Genauigkeit festgestellt werden.
+\cref{fig:Performance2} zeigt die Fehler zur Zeit $t=0.5$. Sichtbar wird hier, dass der Zuwachs an Genauigkeit mit steigender Gittergröße abnimmt.
+Für die hier am häufigsten verwendete Gittergröße $N=30$ beträgt die $SSE$ nach einer Zeit von 0.5 nur ca. 0.02.
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/sse_over_time.pdf}\caption{Sum of squared errors (SSE) der numerischen Integration im Vergleich zu dem Referenzfeld $T^*$.}\label{fig:Performance1}
+\end{figure}
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/SSE_at_end.pdf}\caption{Sum of squared errors (SSE) der numerischen Integration im Vergleich zu dem Referenzfeld $T^*$.}\label{fig:Performance1}
+\end{figure}
+Eine SSE von nur 0.02 ist durchaus akzeptabel, vor allem da dies einer noch geringeren Abweichung der einzelnen Gitterpunkte von $T^*$ entspricht, da die SSE nicht auf die Anzahl der Gitterpunkte normiert ist. Damit lässt sich sagen, dass das FTCS-Verfahren eine physikalisch sinnvolle Lösung des Problems liefert.
+\subsection{Vergleich unterschiedlicher Peclet-Zahlen}
+Nun da bekannt ist, dass die numerische Lösung des Verfahrens eine korrekte Lösung des Problems liefert, kann das ursprüngliche Problem aus \cref{Gl:PDGL} genauer betrachtet werden.
+In \cref{fig:A4} sind die Temperaturfelder für die Peclet-Zahlen $Pe~=2$ und $Pe~=10$ zu den Zeiten $t = 0.005,0.05$ und $0.5$ visualisiert. Die Gittergröße beträgt wieder $N=30$ und die Zeitschrittweite $dt=0.0002$.
+
+Aus dem Vergleich wird deutlich welchen Einfluss die Peclet-Zahl auf die Dynamik des Systems hat. Eine größere Peclet-Zahl führt zu einer schnelleren advektiven Veränderung des Temperaturfeldes.
+
+\begin{figure}
+  \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+      \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2/0.005_2_30_30_0.0002_0.txt.png}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{0.48\textwidth}
+      \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/0.005_10_30_30_0.0002_0.txt.png}
+    \end{subfigure}
+    \\
+    \begin{subfigure}[b]{0.48\textwidth}
+      \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2/0.05_2_30_30_0.0002_0.txt.png}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{0.48\textwidth}
+      \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/0.05_10_30_30_0.0002_0.txt.png}
+    \end{subfigure}
+    \\
+    \begin{subfigure}[b]{0.48\textwidth}
+      \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2/0.5_2_30_30_0.0002_0.txt.png}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{0.48\textwidth}
+      \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/0.5_10_30_30_0.0002_0.txt.png}
+    \end{subfigure}
+    \\
+    \begin{subfigure}[b]{0.48\textwidth}
+      \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe2/1_2_30_30_0.0002_0.txt.png}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{0.48\textwidth}
+      \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/1_10_30_30_0.0002_0.txt.png}
+    \end{subfigure}
+  \caption{Temperaturfeld zu verschiedenen Zeiten und verschiedenen $Pe$. Berechnet mit dem FTCS-Verfahren. Links $Pe~=2$, rechts $Pe=10$.}\label{fig:FTCSnaive}
+\end{figure}
+\subsection{Zulässige Zeitschritte}
+Bis jetzt wurde immer der Zeitschritt $dt=0.0002$ verwendet. Aus den obigen Simulationen ging eindeutig hervor, dass für die betrachteten Gittergrößen und Peclet-Zahlen dieser Zeitschritt noch ein stabiles Verfahren liefert.
+Jetzt wird untersucht ab welcher Größe der Zeitschritt zu einer Divergenz des Verfahrens führt.
+
+Eine theoretische Grenze für die Stabilität des Verfahrens wird durch das CFL-Kriterium für Diffusions- und Advektionsgleichungen vorgegeben.
+Für die Stabilität des Diffusionsterms muss folgende Ungleichung gelten:
+\begin{align}
+  \frac{\Delta t}{\Delta x^2}+\frac{\Delta t}{\Delta y^2} < CFL. \label{eq:CFLdiff}
+\end{align}
+Wobei die CFL-Zahl für diese Ungleichung als $0.5$ angenommen wird. Intuitiv lässt sich diese Gleichung verstehen als die Bedingung, dass die mittlere quadratische Verschiebung durch die Diffusion in einem Zeitschritt den Abstand zweier Gitterpunkte nicht übersteigen darf. Für eine Diffusionskonstante von $1$ ergibt sich damit die CFL-Zahl $0.5$.
+
+Die zweite Stabilitätsbedingung des FTCS-Verfahrens rührt von dem Advektionsterm her und ist ähnlich zu verstehen wie \cref{eq:CFLdiff}. In einem Zeitschritt darf die Verschiebung der Temperatur nur maximal den nächsten Gitterpunkt erreichen.
+Die Ungleichung für den zwei dimensionalen Fall lautet:
+\begin{align}
+  \frac{Pe~u_{max} \Delta t}{\Delta x} +\frac{Pe~v_{max} \Delta t}{\Delta y}  < CFL = 1. \label{eq:CFLAdv}
+\end{align}
+Für unser gegebenes Geschwindikeitsfeld ergibt sich $u_{max} = \pi$ und $v_{max} = 2\pi$. In \cref{fig:CFL} sind die Stabilitätsgrenzen als Funktionen der Peclet-Zahl dargestellt. Der Umschlag des jeweils geltenden Kriteriums befindet sich bei $Pe~=12.56$ für eine konstant gehaltene Gittergröße mit $N=30$.
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A5/theoretical.pdf}
+  \caption{Theoretisch erwartete Grenzen für die Stabiliät in Abhängigkeit von der Peclet-Zahl. Die Punkte markieren die in \cref{fig:stab} gefundenen maximal stabilen Werte.}\label{fig:CFL}
+\end{figure}
+
+Für die Peclet-Zahlen $Pe~=(0.1,1,10,20,100)$ wurde das System mit unterschiedlichen Zeitschritten integriert. \cref{fig:stab} zeigt die Entwicklung des Mittelwertes der Beträge der Gitterpunkte. Die jeweils größten stabilen Zeitschritte sind in \cref{fig:CFL} als Punkte eingetragen.
+
+Aus der Analyse von \cref{fig:stab} geht hervor, dass für $Pe~=(0.1,1,10,20)$ selbst Zeitschritte, die leicht über der Stabilitätsschranke liegen, noch stabil erscheinen.
+
+Allerdings geht aus den Simulationen hervor, dass die der Divergenz für kleinere Zeitschritte später einsetzt, bzw. erkennbar wird. Daraus kann man schließen, dass man bessere Näherungen für den maximalen stabilen Zeitschritt erhält wenn man den Integrationszeitraum erhöht.
+
+Ein anderes Problem tut sich jedoch auf wenn man $Pe~=100$ betrachtet. Diese wurde hier lediglich betrachtet, weil der Umschlag der Stabilitätsgrenze bei $Pe~=20$ nicht erkennbar war, wahrscheinlich wegen des oben beschriebenen Phänomens.
+
+Im Gegensatz zu den kleineren Peclet-Zahlen, liefert die numerische Untersuchung von $Pe~=100$ Zeitschritte die nach \cref{eq:CFLAdv} stabil sein sollten, aber in der Praxis zu Divergenz führen.
+
+Diese Tatsache verdeutlicht, dass es sich bei den CFL-Kriterien nur um notwendige Kriterien handelt und nicht um hinreichende. Eine Neumann'sche Stabilitätsanalyse könnte weitere Kriterien für die Stabilität des Verfahren für größere Peclet-Zahlen aufzeigen.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.5\textwidth}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe0.1.pdf}
+  \end{subfigure}
+  \hspace{-0.5cm}
+  \centering
+  \begin{subfigure}[b]{0.5\textwidth}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe1.0.pdf}
+  \end{subfigure}
+  \hspace{-0.5cm}
+  \centering
+  \begin{subfigure}[b]{0.5\textwidth}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe10.0.pdf}
+  \end{subfigure}
+  \hspace{-0.5cm}
+  \centering
+  \begin{subfigure}[b]{0.5\textwidth}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe20.0.pdf}
+  \end{subfigure}
+  \hspace{-0.5cm}
+  \centering
+  \begin{subfigure}[b]{0.5\textwidth}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe100.0.pdf}
+  \end{subfigure}
+  \caption{Suche nach dem maximalen stabilen Zeitschritt für verschiedene Peclet-Zahlen.}\label{fig:stab}
+\end{figure}
+\subsection{Integration mittels BTCS}
+
 
 \section{Vergleich FTCS- und BTCS}
 
