@@ -38,6 +38,7 @@
 \usepackage{nccmath}%for tiny matrices
 \usepackage{graphicx}
 \usepackage{grffile}%For .s in graphics
+\usepackage{todonotes}%self explanatory
 \usepackage[ngerman]{cleveref}%Für bessere References
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage{subcaption}%Für subfigures
@@ -110,21 +111,99 @@ Prof. Dr. Andreas \textsc{Tilgner} % Supervisor's Name
 
 
 \begin{abstract}
-Your abstract.
+Im Zuge dieses Projektes wird das Verhalten der BTCS und FTCS am Beispiel der Integration der Konvektions-Diffusions-Gleichung behandelt. Es wurden zwei C++ Anwendungen zu Integration der Gleichung erstellt, die benutzt wurden um Fehler, Stabilität und Laufzeit der beiden Verfahren zu untersuchen. Der Fehler des FTCS Verfahren nimmt mit feinerer Aufteilung des Gitters ab, führt aber bei gleichbleibender Zeitdiskretisierung bei hohen Peclet-Zahlen zu Instabilität. Die numerische Suche nach der Instabilitätsgrenze stößt bei begrenzten Integrationszeiträumen an ihre Grenze.
+
+Für das in der BTCS-Methode verwendete SOR-Verfahren wurden optimale Werte des Relaxationsparameters bestimmt. Für einen Zeitschritt von 100 und einer Peclet-Zahl von 10, wurde dieser bei einem Wert von etwa 1.7 gefunden.
+
+Der Vergleich zwischen BTCS und FTCS ergibt wenig Abweichung in Genauigkeit. Das BTCS-Verfahren ist jedoch mit einem größeren Programmieraufwand verbunden und braucht zur Integration des gleichen Zeitraums, bei kleinen Zeiten, ca. 60 mal so viel Zeit.
 \end{abstract}
 
 \section{Einleitung}
 
 \section{Problemstellung}
+In diesem Projekt geht es um die Untersuchung der Konvektions-Diffusions-Gleichung(KDG) mit einem unterliegenden Geschwindigkeitsfeld.
+Interpretieren lässt sich diese zum Beispiel als ein Temperaturfeld in einem Fluid als Medium.
+Die zeitliche Veränderung dieses Feldes wird dann durch zwei verschiedene Wärmetransportarten verursacht.
+Zum einen breitet sich die Temperatur durch Diffusion (Brownsche-Teilchenbewegung) aus. In der KDG tritt diese Ausbreitungart als zweite Ableitung im Ort auf.
 
+Die zweite Transportart, die in einem Fluid auftritt, ist die Konvektion. Wärme wird die sich bewegende Flüssigkeit transportiert. Dies entspricht einem Skalarprodukt von Gradientem mit dem Geschwindigkeitsfeld in der KDG.
+
+\cref{Gl:PDGL} ist die entdimensionalisierte Form der KDG.
 \begin{align}
   \frac{\partial T(\boldsymbol x, t)}{\partial t} + \text{Pe}~ \boldsymbol{u}_0\cdot \nabla T(\boldsymbol x, t) = \nabla^2 T(\boldsymbol x, t). \label{Gl:PDGL}
 \end{align}
 
+Das konkrete Problem wird durch die Randbedingungen und das Geschwindigkeitsfeld charakterisiert.
+Das System ist zunächst auf eine quadratische Box, $0\leq x \leq 1$ und $0\leq y \leq 1$, eingeschränkt.
+An den Rändern der Box werden folgende Randbedingungen angenommen:
+\begin{align}
+  \begin{split}
+  T(t,x,y=0) = 0, &  T(t,x,y=1)=1, \\
+  \left.\frac{\partial T}{\partial x}\right|_{x=0} =& \left.\frac{\partial T}{\partial x}\right|_{x=1} = 0.
+\end{split}
+\end{align}
 
+Das Geschwindigkeitsfeld ist durch \cref{eq:uv} gegeben.
+\begin{align}
+  \boldsymbol u(x,y) =
+  \begin{pmatrix}
+    u(x,y)\\
+    v(x,y)
+  \end{pmatrix} =
+  \begin{pmatrix}
+    \pi \sin{2\pi x}\cos{\pi y}\\
+    -2\pi \cos{2\pi x}\sin{\pi y}
+  \end{pmatrix}\label{eq:uv}
+\end{align}
+Eine kurze Rechnung ergibt, dass das Feld divergenzfrei ist. \cref{fig:uv} zeigt das Geschwindigkeitsfeld in der Box.
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/Protokoll/geschw.pdf}\caption{\centering Geschwindigkeitsfeld \\ in der Box.}\label{fig:uv}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[b]{0.45\textwidth}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/Protokoll/T0.pdf}\caption{\centering Temperaturverteilung zur Zeit $t=0$.}\label{fig:t0}
+  \end{subfigure}
+  \caption{Geschwindigkeitsfeld und Anfangsbedingung des Systems}
+\end{figure}
+
+Die Anfangsbedingung an das Temperaturfeld lautet
+\begin{align}
+  T(0,x,y) = y \nonumber
+\end{align}
+und ist in \cref{fig:t0} dargestellt.
+
+Zur Überprüfung der hier erstellten Verfahren ist es notwendig eine Referenzlösung zur Verfügung zu haben.
+Dazu gibt es die Möglichkeit eine inhomogene Temperaturverteilung zu wählen und die KDG mittels eines Quellterms $Q$ so anzupassen, dass die gewählte Lösung eine stationäre Lösung der modifizierten Gleichung ist.
+
+Als Wunschlösung wird das Temperaturfeld $T^* = \cos{\pi x}\sin{\pi y}+y$ gewählt. Die neue Differentialgleichung des Problems
+lautet nun:
 \begin{align}
   \frac{\partial T(\boldsymbol x, t)}{\partial t} + \text{Pe}~ \boldsymbol{u}_0\cdot \nabla T(\boldsymbol x, t) = \nabla^2 T(\boldsymbol x, t) + Q(x,y). \label{Gl:PDGL_Quell}
 \end{align}
+Durch Einsetzen von $T^*$ in diese Gleichung lässt sich der Quellterm $Q$ bestimmen als \cref{eq:quelle}
+\begin{align}
+  \begin{split}
+  Q = &- Pe~ \pi^2 \sin{2 \pi x} \cos{\pi y} \sin{\pi x} \sin{\pi y} \\
+   &- 2 Pe~ \pi^2 \cos{2 \pi x} \cos{\pi y} \cos{\pi x} \sin{\pi y}\\
+   &- 2 Pe~ \pi \cos{2 \pi x} \sin{\pi y}\\
+   &+ 2 \pi^2 \cos{\pi x} \sin{\pi y}.
+ \end{split}\label{eq:quelle}
+\end{align}
+\cref{fig:qtstat} zeigt die stationäre Lösung $T^*$ und die Quelle $Q$.
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/Protokoll/Tstat.pdf}\caption{\centering Stationäre Lösung $T^*$}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[b]{0.45\textwidth}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/Protokoll/Quelle.pdf}\caption{Quellterm $Q$}
+\end{subfigure}\caption{Stationäre Lösung $T^*$ und Quellterm $Q$ aus \cref{Gl:PDGL_Quell}.}
+  \label{fig:qtstat}
+\end{figure}
+
 
 \section{Methoden}
 Zur Simulation von Strömungsmechanikproblemen kommen eine Vielzahl verschiedener Verfahren in Frage.
@@ -159,7 +238,9 @@ Diskretisiert man \cref{Gl:PDGL} auf diese Weise so erhält man die Differenzeng
    =  \frac{T^{n}_{i+1,j}-2T^{n}_{i,j}+T^{n}_{i-1,j}}{\Delta x^2} +\frac{T^{n}_{i,j+1}-2T^{n}_{i,j}+T^{n}_{i,j-1}}{\Delta y^2}
  \end{split}\label{Gl:FTCS}
 \end{align}
-Diese Gleichung kann nun numerisch integriert werden, indem $T^{n+1}_{i,j}$ für jeden Gitterpunkt berechnet wird.
+Hierbei entspricht $\Delta t$ dem Zeitschritt, $\Delta x = 1./N_x$ und $\Delta y = 1./N_y$ entsprechen den jeweiligen Gitterabständen in $x$- und $y$-Richtung.
+Um den Rand des Systems zu betrachten werden $(N_x+1) \cdot (N_y+1)$ Gitterpunkte betrachtet.
+\cref{Gl:FTCS} kann nun numerisch integriert werden, indem $T^{n+1}_{i,j}$ für jeden Gitterpunkt berechnet wird.
 Allerdings ist darauf zu achten ob man $T^{n+1}_{i,j}$ am Rand berechnet, denn hier müssen die Randbedingungen in die Gleichung eingebaut werden.
 
 Die Dirichlet Randbedingungen lassen sich unproblematisch für $T^{n}_{i,0}$ und $T^{n}_{i,N_y+1}$ einsetzen. Diese Gitterpunkte verändern sich nicht im Laufe der Zeit, müssen also nicht integriert werden.
@@ -170,7 +251,7 @@ Eine Näherung zweiter Ordnung für die Ableitung $\frac{\partial T(\boldsymbol 
 \begin{align}
   \begin{split}
   T^{n+1}_{0,j} = -\frac{1}{3} \left( T^{n+1}_{2,j}-4T^{n+1}_{1,j}\right), \\
-  T^{n+1}_{N_x+1,j} = -\frac{1}{3} \left( T^{n+1}_{N_x-1,j}-4T^{n+1}_{N_x,j}\right).
+  T^{n+1}_{N_x+2,j} = -\frac{1}{3} \left( T^{n+1}_{N_x,j}-4T^{n+1}_{N_x+1,j}\right).
 \end{split}\label{Gl:forw2}
 \end{align}
 
@@ -178,7 +259,7 @@ Mit \cref{Gl:FTCS} und \cref{Gl:forw2} ist man nun in der Lage das das Problem z
 
 \subsection{Die BTCS-Variante}
 Im Gegensatz zu dem FTCS-Verfahren, welches ein explizites Verfahren zu Lösung von partiellen Differentialgleichungen darstellt, handelt es sich bei der \emph{BTCS}-Methode (\textbf{B}ackwards \textbf{T}ime \textbf{C}entral \textbf{S}pace) um ein implizites Verfahren.
-Implizite Verfahren erfordern die Lösung eines Gleichungssystems ehe ein Zeitschritt durchgeführt werden kann.
+Implizite Verfahren erfordern die Lösung eines Gleichungssystems ehe ein Zeitschritt durchgeführt werden kann, garantieren im Gegenzug dafür aber Kovergenz.
 
 Im BTCS-Verfahren wird die Zeitableitung durch eine Rückwärtsdifferenz diskretisiert. Dadurch entsteht in dem vorliegenden Problem zunächst ein lineares Gleichungssystem aus $(N_x+1)\cdot (N_y+1)$ Gleichungen für die $T^n_{i,j}$.
 \begin{align}
@@ -368,7 +449,7 @@ Die Ungleichung für den zwei dimensionalen Fall lautet:
 Für unser gegebenes Geschwindikeitsfeld ergibt sich $u_{max} = \pi$ und $v_{max} = 2\pi$. In \cref{fig:CFL} sind die Stabilitätsgrenzen als Funktionen der Peclet-Zahl dargestellt. Der Umschlag des jeweils geltenden Kriteriums befindet sich bei $Pe~=12.56$ für eine konstant gehaltene Gittergröße mit $N=30$.
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A5/theoretical.pdf}
+  \includegraphics[width=0.7\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A5/theoretical.pdf}
   \caption{Theoretisch erwartete Grenzen für die Stabiliät in Abhängigkeit von der Peclet-Zahl. Die Punkte markieren die in \cref{fig:stab} gefundenen maximal stabilen Werte.}\label{fig:CFL}
 \end{figure}
 
@@ -411,9 +492,68 @@ Diese Tatsache verdeutlicht, dass es sich bei den CFL-Kriterien nur um notwendig
   \end{subfigure}
   \caption{Suche nach dem maximalen stabilen Zeitschritt für verschiedene Peclet-Zahlen.}\label{fig:stab}
 \end{figure}
-\subsection{Integration mittels BTCS}
+\subsection{Feineinstellung des SOR-Algorithmus}
+Da in jedem Zeitschritt des BTCS-Verfahrens ein lineares Gleichungssystem in $N\cdot(N-2)$ Dimensionen gelöst werden muss, und dies Rechenzeit in Anspruch nimmt, ist es sinnvoll das SOR-Verfahren zu optimieren.
+Gesucht ist nun der Relaxationsparameter $\omega$, für welchen die geringste Anzahl an Schritten nötig ist um die Gleichung bis auf eine bestimmte Fehlergrenze zu lösen.
 
+Als Testgleichung wird $M\boldsymbol x = \boldsymbol T^0$ verwendet. Wobei $\boldsymbol T^0$ die Anfangsbedingung unseres Problems darstellt.
 
-\section{Vergleich FTCS- und BTCS}
+Ein Parameterscan in $\omega$ wurde für die Matrizen $M$ mit Parametern $Pe~=10$, $dt=100$, $N=30$ und $Pe~=10$, $dt=0.0002$, $N=30$ durchgeführt. Als Fehlergrenze für $|\boldsymbol r_n|$ wird $10^{-4}$ gewählt.
+Die Ergebnisse sind in \cref{fig:parscan100} und \cref{fig:parscan000} dargsetellt.
 
+Es zeigt sich dass der optimale Wert für $\omega$ stark von der Matrix $M$ abhängt.
+Nicht nur da Minimum der Funktion liegt an unterschiedlichen Positionen ($\omega_{min}=1.685$ für $\Delta t=100$ und $\omega_{min}=1.1$ für $\Delta t=0.0002$), auch das Profil der Iterationen für jedes $\omega$ verändert sich stark. Für \cref{fig:parscan100} explodiert die Anzahl der benötigten Iterationen kurz nach erreichen des optimalen Relaxationsparameters, während das Minimum bei einem Zeitschritt von $dt=0.0002$ wesentlich flacher ist.
+
+Daraus lässt sich schließen, dass die Genauigkeit der Wahl des Relaxationsparameters bei bestimmten Matrizen einen bedeutenden Einfluss auf die Geschwindigkeit des Algorithmus nehmen kann.
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.45\textwidth}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/BTCS/plots/omegascan_dt100.pdf}\caption{Parameterscan in $\omega$ für die Parameter $Pe~=10$, $dt=100$ und $N=30$. Der optimale $\omega$-Wert liegt bei etwa 1.685.}\label{fig:parscan100}
+\end{subfigure}
+~
+\begin{subfigure}[b]{0.45\textwidth}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/BTCS/plots/omegascan_dt0.0002.pdf}\caption{Parameterscan in $\omega$ für die Parameter $Pe~=10$, $dt=0.0002$ und $N=30$. Der optimale $\omega$-Wert liegt bei etwa 1.1.}\label{fig:parscan000}
+\end{subfigure}
+\end{figure}
+
+\subsection{Vergleich FTCS und BTCS}
+Mit dem optmimierten SOR-Verfahren kann nun sinnvoll ein Vergleich zwischen dem FTCS- und dem BTCS-Verfahren durchgeführt werden.
+Für die Parameter $Pe~=10$, $dt=0.0002$ und $N=30$ is in \cref{fig:vergleich} das Temperaturfeld für verschieden Zeitpunkte, mit dem FTCS- und dem BTCS-Verfahren integriert, aufgezeigt.
+
+Es sind keine starken Unterschiede zu erkennen. Man kann unter Umständen eine Abweichung zur Zeit $t=0.0054$ erkennen, diese ist aber nur sehr schwach ausgeprägt.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.5\textwidth}\caption{BTCS}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/BTCS/plots/0.0054_10_30_30_0.0002_0.txt.png}
+  \end{subfigure}
+  \hspace{-0.5cm}
+  \begin{subfigure}[b]{0.5\textwidth}\caption{FTCS}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/compare/0.0054_10_30_30_0.0002_0.txt.png}
+  \end{subfigure}
+  \\
+  \begin{subfigure}[b]{0.5\textwidth}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/BTCS/plots/0.0508_10_30_30_0.0002_0.txt.png}
+  \end{subfigure}
+  \hspace{-0.5cm}
+  \begin{subfigure}[b]{0.5\textwidth}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/compare/0.0508_10_30_30_0.0002_0.txt.png}
+  \end{subfigure}
+  \\
+  \begin{subfigure}[b]{0.5\textwidth}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/BTCS/plots/0.5002_10_30_30_0.0002_0.txt.png}
+  \end{subfigure}
+  \hspace{-0.5cm}
+  \begin{subfigure}[b]{0.5\textwidth}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/compare/0.5002_10_30_30_0.0002_0.txt.png}
+  \end{subfigure}
+  \caption{Vergleich zwischen den Temperaturfeldern, wie sie durch die BTCS- und FTCS-Integration zustande kommen.}\label{fig:vergleich}
+\end{figure}
+
+Einen deutlicheren Unterschied bildet die Laufzeit der beiden Verfahren. Kleine Integrationszeiträume von $t_{end}=0.5$ werden vom FTCS-Verfahren mit dem maximal möglichen Zeitschritt von 0.000277 in weniger als $1$~s gelöst. Das BTCS-Verfahren benötigt dafür mit einem Zeitschritt von 0.5 ca. 55~s.
+
+Bei einem Integrationzeitraum von $t_{end}=100$ jedoch benötigen beide Verfahren ähnlich viel Zeit. Hier liegt die Laufzeit des FTCS bei 120~s und die des BTCS bei 127~s.
+
+Die Ergebnisse dieser Integration sind in \cref{fig:vergleich2} dargestellt.
 \end{document}

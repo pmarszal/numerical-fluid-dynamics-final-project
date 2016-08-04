@@ -6,27 +6,42 @@
 #include "/home/marszal/Projects/Num_Str_final/operations.h"
 using namespace std;
 
-/*
-Ein Integrationsschritt mit dem FTCS-Verfahren. Beinhaltet die Schleife ueber x und y. Funktion veraendert das
-Zielarray, welches ihr uebergeben wird.
-*/
+
+//Erzeugt das Geschwindigkeitsfeld
+void init_u(vector<vector<double> > &u_0, vector<vector<double> > &v_0);
+
+//Erzeugt das Temperaturfeld zum Zeitpunkt 0
+void init_T(vector<vector<double> > &T);
+
+//Erzeugt das Quellfeld und die stationäre Lösung
+void init_Q_T_star(vector<vector<double> > &Q, vector<vector<double> > &T_star);
+
+//Ein Integrationsschritt mit dem FTCS-Verfahren.
 void FTCS(vector<vector<double> > &T, vector<vector<double> > u_0, vector<vector<double> > v_0);
-/*
-Funktion berechnet SSE(Sum of squared errors) eines Vektors T von einem Vektor T_star.
-*/
+
+//Funktion berechnet SSE(Sum of squared errors) eines Vektors T von einem Vektor T_star.
 double SSE (vector<vector< double> > T, vector<vector< double> > T_star);
-/*
-Funktion um Qij zu berechnen, nach der bestimmten Formel
-*/
+
+//Berechnet das Quellfeld an einem Ort
 double Qij(double x, double y);
-/*
-Funktion um T_star aus Aufgabe 3 zu berechnen
-*/
+
+//Berechnet die Stationäre Lösung
 double T_star_ij(double x, double y);
-/*
-Angepasster Zeitschritt mit Q zur Fehlerbestimmung. Unterschied zu FTCS() ist die Addition von dt*Q.
-*/
+
+//Ein Integrationsschritt mit der modifizierten Gleichung
 void FTCS_with_Q(vector<vector<double> > &T, vector<vector<double> > u_0, vector<vector<double> > v_0, vector<vector<double> > Q);
+
+//Wandelt das 2D Temperaturfeld in einen Vektor um
+vector<double> reshape_vector(vector<vector<double> > T);
+
+//Fügt die Dirichlet-Randbedingungen in den Temperaturvektor ein
+void impose_dirichlet(vector<double>  &T, vector<vector<double> > u_0, vector<vector<double> > v_0);
+
+//Wandelt einen Temperaturvektor zurück in ein 2D Array
+vector<vector<double> > shape_back(vector<double> T, double T_low, double T_high);
+
+//Erzeugt die BTCS-Matrix
+vector<vector<double> > BCTS_implicit_Matrix(vector<vector<double> > u_0, vector<vector<double> > v_0);
 
 
 
@@ -35,12 +50,7 @@ void FTCS_with_Q(vector<vector<double> > &T, vector<vector<double> > u_0, vector
 Definitionen der Funktionen
 */
 
-/*
-Variablen Initialisierungen
-*/
-/*
-Geschwindigkeitsfelder initialisieren
-*/
+
 void init_u(vector<vector<double> > &u_0, vector<vector<double> > &v_0){
 	for(int i = 0; i< Nx+1; i++){
 			vector<double> u_F;
@@ -178,8 +188,8 @@ vector<double> reshape_vector(vector<vector<double> > T){
 	for(int i=0; i<T.size();i++){ //Schleife x
     for(int j=0; j<T.size();j++){ //Schleife y
       //Randbed:
-      if(j==0){
-        Vec_M.push_back(T[i][j+1]);//j+1
+      if(j==0){//Überspringe wenn am Dirichlet-Rand
+        Vec_M.push_back(T[i][j+1]);
         j++;
       }
       else if(j==T.size()-2){
@@ -234,7 +244,6 @@ vector<vector<double> > shape_back(vector<double> T, double T_low, double T_high
 }
 
 vector<vector<double> > BCTS_implicit_Matrix(vector<vector<double> > u_0, vector<vector<double> > v_0){
-	//Create (L+D)-Matrix
 	vector<double> xtemp((u_0.size())*(u_0.size()-2), 0.0);
 	vector<vector<double> > MLD((u_0.size())*(u_0.size()-2),xtemp);
 	//M[k][l] k Spalte, l Zeile

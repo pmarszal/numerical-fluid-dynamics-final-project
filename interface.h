@@ -24,15 +24,15 @@ double T_unten = 0.;//Randbedingungen
 double T_oben = 1.;
 
 //BTCS Optionen
-double r_end;
-double omega;
+double r_end;//Abbruchbedingung
+double omega;//Relaxationsparameter
 
 //Integration mit Quellterm?
 bool b_Q;
 
 //Ausgabe des Feldes
-vector<double> t_snap;
-string dirname;
+vector<double> t_snap;//Liste der zu speichernden Zeitpunkte
+string dirname;//Pfad in dem die Ausgabe gespeichert werden soll
 //Ausgabe des Ergebnisses der Abweichung von T zu T*
 string outname;
 
@@ -56,8 +56,8 @@ void usage_message(char** params);
 /*
 Laedt eine Konfigurationsdatei und weist jeder globalen Variablen den Wert aus der Datei zu.
 */
-void load_conf(const char* cfg_name);
-void store_line(string key, string value);
+void load_conf(const char* cfg_name);//Liest die .cfg Datei
+void store_line(string key, string value);//Beinhaltet Ordnet jeder globalen Variablen einen Wert aus der .cfg Datei zu
 
 
 /*

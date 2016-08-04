@@ -4,10 +4,9 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <ctime>
 
-/*
-Funktion zum Berechnen des Produktes M*x
-*/
+//Funktion zum Berechnen des Produktes M*x
 std::vector<double> matrix_times_vector(std::vector<std::vector<double> > M, std::vector<double> x){
   //M[i][j] i Spalte, j Zeile
   if(M.size()!=x.size()){
@@ -24,6 +23,8 @@ std::vector<double> matrix_times_vector(std::vector<std::vector<double> > M, std
   }
   return y;
 }
+
+//Skalarprodukt
 double scalar_product(std::vector<double> x, std::vector<double> y){
   if(y.size()!=x.size()){
     std::cout<<"Error: Vector size does not fit the vector size!"<<std::endl;
@@ -35,9 +36,8 @@ double scalar_product(std::vector<double> x, std::vector<double> y){
   }
   return xy;
 }
-/*
-Funktion zum Berechnen des Produktes lambda*x
-*/
+
+//Funktion zum Berechnen des Produktes lambda*x
 std::vector<double> scalar_multiplication(std::vector<double> x, double lambda){
   std::vector<double> y;
   for(int i =0; i<x.size();i++){
@@ -48,9 +48,8 @@ std::vector<double> scalar_multiplication(std::vector<double> x, double lambda){
 double magnitude(std::vector<double> x){
   return sqrt(scalar_product(x,x));
 }
-/*
-Funktion zum Berechnen der Differenz zweier Vektoren x-y.
-*/
+
+//Funktion zum Berechnen der Differenz zweier Vektoren x-y.
 std::vector<double> subtract_vector(std::vector<double> x, std::vector<double> y){
   if(y.size()!=x.size()){
     std::cout<<"Error: Vector size does not fit the vector size!"<<std::endl;
@@ -62,9 +61,8 @@ std::vector<double> subtract_vector(std::vector<double> x, std::vector<double> y
   }
   return r;
 }
-/*
-Funktion zum Berechnen der Differenz zweier Vektoren x-y.
-*/
+
+//Funktion zum Berechnen der Differenz zweier Vektoren x-y.
 std::vector<double> add_vector(std::vector<double> x, std::vector<double> y){
   if(y.size()!=x.size()){
     std::cout<<"Error: Vector size does not fit the vector size!"<<std::endl;
@@ -76,9 +74,8 @@ std::vector<double> add_vector(std::vector<double> x, std::vector<double> y){
   }
   return r;
 }
-/*
-Triangularisiere eine Matrix M
-*/
+
+//Triangularisiere eine Matrix M
 std::vector<std::vector<double> > triangularize(std::vector<std::vector<double> > M){
   vector<std::vector<double> > R=M;
   for(int i =0;i<M.size(); i++){
@@ -89,9 +86,8 @@ std::vector<std::vector<double> > triangularize(std::vector<std::vector<double> 
   return R;
 }
 
-/*
-Funktion zum Berechnen des Produktes M^(-1)*x .
-*/
+
+//Funktion zum Berechnen des Produktes M^(-1)*x mittels Vorwärtssubstitution
 std::vector<double>  inverse_matrix_multiplication(std::vector<std::vector<double> > M, std::vector<double> x){
   /*
   Zähle die Zeile j hoch, dann die Spalte i bis i=j. Summiere alle Werte M_ij*y_i auf und speicher
@@ -115,13 +111,18 @@ std::vector<double>  inverse_matrix_multiplication(std::vector<std::vector<doubl
   return y;
 }
 
+//Berechne die Lösung eines linearen Gleichungssystems mit Successive Over-Relaxation
 int SOR(vector<double>  &T, vector<vector<double> > M, vector<vector<double> > LD, double omega, double end_r){
 	std::vector<double> x_old=T;
 	std::vector<double> x_n = x_old;
 	double r = 1000.;
 	int n_gs = 0;
 
-	while(r>end_r){
+  long int t_start;//TIME LOG
+  time(&t_start);
+  std::cout<<std::endl;
+
+	while(r>end_r){ //Stoppe wenn ein bestimmter Fehler unterschritten wird
 		std::vector<double> r_n = subtract_vector(matrix_times_vector(M,x_old), T);
 		r = magnitude(r_n);
 		r_n = inverse_matrix_multiplication(LD,r_n);
@@ -129,11 +130,17 @@ int SOR(vector<double>  &T, vector<vector<double> > M, vector<vector<double> > L
 		x_n = subtract_vector(x_old, r_n);
 		n_gs++;
 		x_old = x_n;
+
+    long int t_finished;
+    time(&t_finished);
+    std::cout<<"\r n: "<< n_gs<<"\t\t, w : "<<omega<<"\t, Time: "<< t_finished-t_start <<" s"<< std::flush;
 	}
+  std::cout<<std::endl;
 	T = x_n;
   return n_gs;
 }
 
+//Transponiere eine Matrix
 vector<vector<double> > transpose(vector<vector<double> > M){
   vector<vector<double> > T = M;
   for(int k=0;k<M.size();k++){

@@ -23,19 +23,24 @@ int main(int argc, char** argv){
   std::vector<std::vector<double> > LD = triangularize(M);
 
 
-  double omega=0.5;
+  double omega=1.6;
 
   ofstream outfile;
-
-  while (omega<1.71){
+  std::vector<double> x(T_Vec.size(),0.0);
+  std::vector<double> y(T_Vec.size(),0.0);
+  y = T_Vec;
+  impose_dirichlet(y, u_0, v_0);
+  while (omega<1.7){
     int n_gs=0;
-    std::vector<double> x = T_Vec;
+    for(int k = 0; k<T_Vec.size(); k++){x[k]=y[k];}
     outfile.open(outname.c_str(), std::ios_base::app);
     n_gs=SOR(x, M, LD, omega, r_end);
     outfile<<omega<<" "<<n_gs<<endl;
     outfile.close();
     omega+=0.01;
+    std::cout<<std::endl;
   }
+
 
 
   return 0;
