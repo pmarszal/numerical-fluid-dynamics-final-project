@@ -39,6 +39,7 @@
 \usepackage{graphicx}
 \usepackage{grffile}%For .s in graphics
 \usepackage{todonotes}%self explanatory
+\usepackage{placeins}%für FloatBarriers
 \usepackage[ngerman]{cleveref}%Für bessere References
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage{subcaption}%Für subfigures
@@ -119,7 +120,15 @@ Der Vergleich zwischen BTCS und FTCS ergibt wenig Abweichung in Genauigkeit. Das
 \end{abstract}
 
 \section{Einleitung}
+Obwohl die Navier-Stokes-Gleichungen seit der ersten Hälfte des 19ten Jahrhunderts bekannt sind, gibt es heute noch immer keine allgemeine analytische Lösung dieser.
+Die Hartnäckigkeit dieses Problem hat das \emph{Clay Mathematics Institute} sogar dazu gebracht ein 1 Millionen \$ Ausschreiben auf die Lösung der Gleichungen auszusetzen.
 
+Für die Untersuchung strömungsdynamischer Systeme, ist man daher nahezu vollkommen auf numerische Methoden angewiesen.
+
+Ein Beispiel für die Integration der Konvektions-Diffusions-Gleichung wird hier mit den beiden finiten Differenzenmethoden FTCS und BTCS
+diskutiert.
+
+\newpage
 \section{Problemstellung}
 In diesem Projekt geht es um die Untersuchung der Konvektions-Diffusions-Gleichung(KDG) mit einem unterliegenden Geschwindigkeitsfeld.
 Interpretieren lässt sich diese zum Beispiel als ein Temperaturfeld in einem Fluid als Medium.
@@ -204,7 +213,7 @@ Durch Einsetzen von $T^*$ in diese Gleichung lässt sich der Quellterm $Q$ besti
   \label{fig:qtstat}
 \end{figure}
 
-
+\newpage
 \section{Methoden}
 Zur Simulation von Strömungsmechanikproblemen kommen eine Vielzahl verschiedener Verfahren in Frage.
 Ein konzeptionell simples Verfahren, das häufig Anwendung findet, ist die \emph{Finite-Differenzen-Methode}.
@@ -294,6 +303,7 @@ M=\left(\begin{medsize}\begin{smallmatrix}
 Hierbei wurde der Vektor $\boldsymbol T^n$ so gewählt, dass die Spalten des Gitters aneinander gehängt werden, sprich die Komponenten des Vektors laufen zunächst im $j$-Index durch : $\boldsymbol T^n = \left( T^n_{0,1}, T^n_{0,2}, ..., T^n_{0,N_y}, T^n_{1,1},...,T^n_{N_x+1,N_y} \right)$.
 Die Terme $A=\frac{Pe~\Delta t}{\Delta x}$ und $D=\frac{\Delta t}{\Delta x^2}$ enstprechen den konstanten Vorfaktoren im Advektions- und Diffusionsterm.
 
+\newpage
 \subsection{Der SOR-Algorithmus}
 Die Matrix $M$ hat für vernünftige Gittergrößen und Zeitschritte $\Delta t$ die Eigenschaft, dass sie diagonal dominant ist. Also die Summe der Beträge der nicht-diagonalen Einträge in jeder Spalte nicht den Betrag des diagonalen Eintrags dieser Spalte übersteigt.
 
@@ -312,15 +322,27 @@ Die Iterationsvorschrift des SOR-Algorithmus lautet:
 \end{align}
 Für die Wärmetransportgleichung liegt der optimale Relaxationsparameter zwischen 0 und 2.
 
-
+\newpage
 \section{Programmstruktur}
+
+\begin{figure}\centering
+  %\input{FTCSflow.pdf_tex}
+\includegraphics[height=0.45\textheight]{FTCSflow.pdf}\caption{Flowchart der Implementierung der FTCS-Methode.}\label{fig:FTCS}
+\end{figure}
+
 Zur Bearbeitung des Problems wurden die beiden Methoden, FTCS und BTCS, in zwei getrennten Programmen implementiert. Als interface mit den Programmen wurde eine Konfigurationsdatei erstellt, die es erlaubt Parameter der Algorithmen zu ändern, ohne das Programm neu komplilieren zu müssen.
 Die Interaktion mit der Konfigurationsdatei wurde in der Headerdatei \emph{interface.h} implementiert, welche zudem sämtliche Funktionen zur Ausgabe der Ergebnisse beinhaltet.
 
 Die Kernfunktionen der Integration befinden sich in der \emph{integration.h}-Datei. Diese sind die Initialisierungen der Temperaturfelder, des Quellfeldes und der Geschwindigkeitsfelder.
 Außerdem sind einzelne Zeitschritte in den Funktionen \emph{FTCS()} und \emph{FTCS\_with\_Q()} zusammengefasst. Diese nehmen als Input das Temperaturfeld (call-by-reference), die Geschwindigkeitsfelder und das Quellfeld (call-by-value).
 Die Entscheidung, welche Gleichung integriert werden soll, wird in der Konfigurationsdatei getroffen.
+\FloatBarrier
+\newpage
 
+\begin{figure}\centering
+  %\input{FTCSflow.pdf_tex}
+\includegraphics[height=0.45\textheight]{BTCSflow.pdf}\caption{Flowchart der Implementierung der BTCS-Methode.}\label{fig:BTCS}
+\end{figure}
 
 Die BTCS-Methode benötigt weitere Funktionen, die von dem betrachteten Problem abhängen. Dies sind Funktionen zum transformieren des Feldes in einen Vektor und zurück (\emph{reshape\_vector()} und \emph{shape\_back()}), die Einführung der Dirichlet-Randbedingungen in den Vektor (\emph{impose\_dirichlet()}) und die Initialisierung der Matrix $M$ (\emph{BCTS\_implicit\_Matrix()}).
 
@@ -332,46 +354,40 @@ Innerhalb der Schleife über die Zeit wurde zudem eine Abfrage eingeführt, die 
 Die Darstellung der Ergebnisse wurde mittels \emph{Python-Matplotlib} durchgeführt.
 
 
-\begin{figure}\centering
-  %\input{FTCSflow.pdf_tex}
-\includegraphics[width=0.4\textheight]{FTCSflow.pdf}\caption{Flowchart der Implementierung der FTCS-Methode.}\label{fig:FTCS}
-\end{figure}
-
-\begin{figure}\centering
-  %\input{FTCSflow.pdf_tex}
-\includegraphics[width=0.4\textheight]{BTCSflow.pdf}\caption{Flowchart der Implementierung der BTCS-Methode.}\label{fig:BTCS}
-\end{figure}
-
+\FloatBarrier
+\newpage
 \section{Ergebnisse}
 Die anfängliche Betrachtung des Temperaturfeldes im Verlauf der Zeit, wie es durch die FTCS-Methode berechnet wird, liefert die Ergebnisse in \cref{fig:FTCSnaive}. Hiefür wurde eine Peclet-Zahl von $Pe~=10$ und ein Gitter von $N_x=N_y=30$ angenommen. Die Schrittweite in der Zeit beträgt $dt=0.0002$.
 
 \begin{figure}
 \centering
-  \begin{subfigure}[b]{0.48\textwidth}
+  \begin{subfigure}[b]{0.35\textwidth}
     \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0056_10_30_30_0.0002_0.txt.png}
   \end{subfigure}
   ~
-  \begin{subfigure}[b]{0.48\textwidth}
+  \begin{subfigure}[b]{0.35\textwidth}
     \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0112_10_30_30_0.0002_0.txt.png}
   \end{subfigure}
   \\
-  \begin{subfigure}[b]{0.48\textwidth}
+  \begin{subfigure}[b]{0.35\textwidth}
     \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0168_10_30_30_0.0002_0.txt.png}
   \end{subfigure}
   ~
-  \begin{subfigure}[b]{0.48\textwidth}
+  \begin{subfigure}[b]{0.35\textwidth}
     \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0224_10_30_30_0.0002_0.txt.png}
   \end{subfigure}
   \\
-  \begin{subfigure}[b]{0.48\textwidth}
+  \begin{subfigure}[b]{0.35\textwidth}
     \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0278_10_30_30_0.0002_0.txt.png}
   \end{subfigure}
   ~
-  \begin{subfigure}[b]{0.48\textwidth}
+  \begin{subfigure}[b]{0.35\textwidth}
     \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/all/0.0446_10_30_30_0.0002_0.txt.png}
   \end{subfigure}
 \caption{Temperaturfeld zu verschiedenen Zeiten. Berechnet mit dem FTCS-Verfahren.}\label{fig:FTCSnaive}
 \end{figure}
+\FloatBarrier
+\newpage
 \subsection{Fehler der FTCS-Lösung}
 Allerdings muss noch überprüft werden, wie genau das Ergebnis ist, und, wie die Gittergröße sich auf die Konvergenz auswirkt.
 Dazu wird \cref{eq:PDGL_Quell} benutzt. Da die stabile stationäre Lösung dieser Gleichung bekannt ist verfügt man über ein Referenzfeld gegen das die FTCS-Näherung konvergieren müsste.
@@ -502,14 +518,14 @@ Ein Parameterscan in $\omega$ wurde für die Matrizen $M$ mit Parametern $Pe~=10
 Die Ergebnisse sind in \cref{fig:parscan100} und \cref{fig:parscan000} dargsetellt.
 
 Es zeigt sich dass der optimale Wert für $\omega$ stark von der Matrix $M$ abhängt.
-Nicht nur da Minimum der Funktion liegt an unterschiedlichen Positionen ($\omega_{min}=1.685$ für $\Delta t=100$ und $\omega_{min}=1.1$ für $\Delta t=0.0002$), auch das Profil der Iterationen für jedes $\omega$ verändert sich stark. Für \cref{fig:parscan100} explodiert die Anzahl der benötigten Iterationen kurz nach erreichen des optimalen Relaxationsparameters, während das Minimum bei einem Zeitschritt von $dt=0.0002$ wesentlich flacher ist.
+Nicht nur da Minimum der Funktion liegt an unterschiedlichen Positionen ($\omega_{min}=1.599$ für $\Delta t=100$ und $\omega_{min}=1.1$ für $\Delta t=0.0002$), auch das Profil der Iterationen für jedes $\omega$ verändert sich stark. Für \cref{fig:parscan100} explodiert die Anzahl der benötigten Iterationen kurz nach erreichen des optimalen Relaxationsparameters, während das Minimum bei einem Zeitschritt von $dt=0.0002$ wesentlich flacher ist.
 
 Daraus lässt sich schließen, dass die Genauigkeit der Wahl des Relaxationsparameters bei bestimmten Matrizen einen bedeutenden Einfluss auf die Geschwindigkeit des Algorithmus nehmen kann.
 
 \begin{figure}
 \centering
 \begin{subfigure}[b]{0.45\textwidth}
-  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/BTCS/plots/omegascan_dt100.pdf}\caption{Parameterscan in $\omega$ für die Parameter $Pe~=10$, $dt=100$ und $N=30$. Der optimale $\omega$-Wert liegt bei etwa 1.685.}\label{fig:parscan100}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/BTCS/plots/omegascan_dt100.pdf}\caption{Parameterscan in $\omega$ für die Parameter $Pe~=10$, $dt=100$ und $N=30$. Der optimale $\omega$-Wert liegt bei etwa 1.599.}\label{fig:parscan100}
 \end{subfigure}
 ~
 \begin{subfigure}[b]{0.45\textwidth}
@@ -553,7 +569,32 @@ Es sind keine starken Unterschiede zu erkennen. Man kann unter Umständen eine A
 
 Einen deutlicheren Unterschied bildet die Laufzeit der beiden Verfahren. Kleine Integrationszeiträume von $t_{end}=0.5$ werden vom FTCS-Verfahren mit dem maximal möglichen Zeitschritt von 0.000277 in weniger als $1$~s gelöst. Das BTCS-Verfahren benötigt dafür mit einem Zeitschritt von 0.5 ca. 55~s.
 
-Bei einem Integrationzeitraum von $t_{end}=100$ jedoch benötigen beide Verfahren ähnlich viel Zeit. Hier liegt die Laufzeit des FTCS bei 120~s und die des BTCS bei 127~s.
+Bei längeren Integrationszeiträumen jedoch stößt die FTCS-Methode an ihre Grenzen, da sie nur für sehr kleine Zeitschritte stabil ist.
+Dadurch werden wesentlich mehr Iterationen benötigt, wodurch die Laufzeit anwächst.
+Die BTCS-Methode kann selbst bei großen Zeitschritten ein gutes Ergebnis liefern, wie in \cref{fig:vergleich2} zu sehen ist.
 
-Die Ergebnisse dieser Integration sind in \cref{fig:vergleich2} dargestellt.
+Für einem Integrationzeitraum von $t_{end}=100$ liefert das FTCS-Verfahren eine Laufzeit von 120~s und das BTCS-Verfahren eine Laufzeit von 93~s, bei einem Zeitschritt von $\Delta t = 100$.
+Damit bestätigt sich die Vermutung, dass implizite Verfahren bei größeren Integrationszeiträumen, und wenn keine hohe Zeitauflösung benötigt wird, die effizientere Alternative zu den expliziten Methoden bilden.
+
+\begin{figure}
+\centering
+  \begin{subfigure}[b]{0.5\textwidth}\caption{FTCS}
+    \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/BTCS/plots/compare/FTCS100_10_30_30_0.0002777_0.txt.pdf}
+  \end{subfigure}
+  \hspace{-0.5cm}
+  \begin{subfigure}[b]{0.5\textwidth}\caption{BTCS}
+    \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/BTCS/plots/compare/BTCS100_10_30_30_100_0.txt.pdf}
+  \end{subfigure}
+  \caption{Vergleich zwischen den Temperaturfeldern, wie sie durch die BTCS- und FTCS-Integration zustande kommen, nach einem Zeitraum von $t=100$.}\label{fig:vergleich2}
+\end{figure}
+\newpage
+\section{Fazit}
+Die Vor- und Nachteile der BTCS-und FTCS-Verfahren wurden im Zuge dieser Ausarbeitung deutlich aufgezeigt.
+Während das FTCS-Verfahren sehr einfach zu implementieren ist, und pro Zeitschritt sehr effizient rechnet, sind die Möglichkeiten des FTCS-Verfahrens beschränkt. Eine obere Schranke an den Zeitschritt, um die Stabilität des Verfahrens zu garantieren, führt zu überaus langen Laufzeiten für Simulationen großer Zeiträume.
+
+Interessiert man sich für die Simulation langer Zeiträume, bei relativ grober Gittereinteilung, so greift man besser zu dem BTCS-Schema.
+Zwar büßt man an Zeitauflösung ein, da man die Anzahl der Zeitschritte möglichst gering halten möchte, gewinnt aber an Stabilität, und ab einer bestimmten Größe des simulierten Zeitraums spart man ebenfalls Laufzeit gegenüber des FTCS-Schemas.
+
+Implementiert man das BTCS-Verfahren, so muss der Relaxationsparameter sorgfältig gewählt werden, da er die Anzahl der Iterationen pro Zeitschritt deutlich reduzieren kann.
+
 \end{document}
