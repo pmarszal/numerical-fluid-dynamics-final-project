@@ -37,12 +37,14 @@
 \usepackage{amsmath}
 \usepackage{nccmath}%for tiny matrices
 \usepackage{graphicx}
+\usepackage{cite}
 \usepackage{grffile}%For .s in graphics
 \usepackage{todonotes}%self explanatory
 \usepackage{placeins}%für FloatBarriers
 \usepackage[ngerman]{cleveref}%Für bessere References
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage{subcaption}%Für subfigures
+%\usepackage{hyperref}%Für Links
 
 \setlength\parindent{0pt} %Noindent for the whole document
 
@@ -77,7 +79,9 @@
 \begin{minipage}{0.4\textwidth}
 \begin{flushleft} \large
 \emph{Author:}\\
-Philip \textsc{Marszal} % Your name
+Philip \textsc{Marszal} \\
+\emph{Matrikelnummer:}\\
+21212455
 \end{flushleft}
 \end{minipage}
 ~
@@ -109,14 +113,19 @@ Prof. Dr. Andreas \textsc{Tilgner} % Supervisor's Name
 \vfill % Fill the rest of the page with whitespace
 
 \end{titlepage}
-
+\vfill
+\newpage
+\thispagestyle{empty}
+\newpage
+\tableofcontents
+\newpage
 
 \begin{abstract}
-Im Zuge dieses Projektes wird das Verhalten der BTCS und FTCS am Beispiel der Integration der Konvektions-Diffusions-Gleichung behandelt. Es wurden zwei C++ Anwendungen zu Integration der Gleichung erstellt, die benutzt wurden um Fehler, Stabilität und Laufzeit der beiden Verfahren zu untersuchen. Der Fehler des FTCS Verfahren nimmt mit feinerer Aufteilung des Gitters ab, führt aber bei gleichbleibender Zeitdiskretisierung bei hohen Peclet-Zahlen zu Instabilität. Die numerische Suche nach der Instabilitätsgrenze stößt bei begrenzten Integrationszeiträumen an ihre Grenze.
+Im Zuge dieses Projektes wird das Verhalten der BTCS und FTCS am Beispiel der Integration der Konvektions-Diffusions-Gleichung behandelt. Es wurden zwei C++ Anwendungen zu Integration der Gleichung erstellt, die benutzt wurden um Fehler, Stabilität und Laufzeit der beiden Verfahren zu untersuchen. Der Fehler des FTCS Verfahren nimmt mit feinerer Aufteilung des Gitters ab, führt aber bei gleichbleibender Zeitdiskretisierung bei hohen Péclet-Zahlen zu Instabilität. Die numerische Suche nach der Instabilitätsgrenze stößt bei begrenzten Integrationszeiträumen an ihre Grenze.
 
-Für das in der BTCS-Methode verwendete SOR-Verfahren wurden optimale Werte des Relaxationsparameters bestimmt. Für einen Zeitschritt von 100 und einer Peclet-Zahl von 10, wurde dieser bei einem Wert von etwa 1.7 gefunden.
+Für das in der BTCS-Methode verwendete SOR-Verfahren wurden optimale Werte des Relaxationsparameters bestimmt. Für einen Zeitschritt von 100 und einer Péclet-Zahl von 10, wurde dieser bei einem Wert von etwa 1.7 gefunden.
 
-Der Vergleich zwischen BTCS und FTCS ergibt wenig Abweichung in Genauigkeit. Das BTCS-Verfahren ist jedoch mit einem größeren Programmieraufwand verbunden und braucht zur Integration des gleichen Zeitraums, bei kleinen Zeiten, ca. 60 mal so viel Zeit.
+Der Vergleich zwischen BTCS und FTCS ergibt wenig Abweichung in Genauigkeit. Das BTCS-Verfahren ist jedoch mit einem größeren Programmieraufwand verbunden und braucht zur Integration des gleichen Zeitraums, bei kleinen Zeiten, ca. 60 mal so viel Zeit. Für große Zeiträume gleichen sich die Laufzeiten der Algorithmen an. Es wurde festgestellt, dass für Zeiten $>100$ der BTCS-Algorithmus das FTCS-Verfahren an überholt.
 \end{abstract}
 
 \section{Einleitung}
@@ -133,9 +142,9 @@ diskutiert.
 In diesem Projekt geht es um die Untersuchung der Konvektions-Diffusions-Gleichung(KDG) mit einem unterliegenden Geschwindigkeitsfeld.
 Interpretieren lässt sich diese zum Beispiel als ein Temperaturfeld in einem Fluid als Medium.
 Die zeitliche Veränderung dieses Feldes wird dann durch zwei verschiedene Wärmetransportarten verursacht.
-Zum einen breitet sich die Temperatur durch Diffusion (Brownsche-Teilchenbewegung) aus. In der KDG tritt diese Ausbreitungart als zweite Ableitung im Ort auf.
+Zum einen breitet sich die Temperatur durch Diffusion (Brownsche-Teilchenbewegung) aus. In der KDG tritt diese Ausbreitungsart als zweite Ableitung im Ort auf.
 
-Die zweite Transportart, die in einem Fluid auftritt, ist die Konvektion. Wärme wird die sich bewegende Flüssigkeit transportiert. Dies entspricht einem Skalarprodukt von Gradientem mit dem Geschwindigkeitsfeld in der KDG.
+Die zweite Transportart, die in einem Fluid auftritt, ist die Konvektion. Wärme wird die sich bewegende Flüssigkeit transportiert. Dies entspricht einem Skalarprodukt von Gradienten mit dem Geschwindigkeitsfeld in der KDG.
 
 \cref{Gl:PDGL} ist die entdimensionalisierte Form der KDG.
 \begin{align}
@@ -237,7 +246,7 @@ oder für die zweite Ableitung als Vorwärtsdifferenzenquotient von $T'(x)$:
 \begin{align}
   T''(x) = \frac{T(x+h)-2T(x)+T(x-h)}{h^2}+O(h^2).\label{Gl:dq2O2Abl}
 \end{align}
-Durch Kombinationen unterschiedlicher Differenzenquotienten können Näherungen höherer Ordnung erhalten werden.
+Durch Kombinationen unterschiedlicher Differenzenquotienten können Näherungen höherer Ordnung erhalten werden \cite{numstr}.
 \subsection{FTCS-Variante}
 Verwendet man zur Diskretisierung der PDGL eine Vorwärtsdifferenz für die Zeitableitung und eine zentrale Differenz für die Ortsableitungen, so spricht man von einem \emph{FTCS}-Verfahren (\textbf{F}orwards \textbf{T}ime \textbf{C}entral \textbf{S}pace).
 Diskretisiert man \cref{Gl:PDGL} auf diese Weise so erhält man die Differenzengleichung:
@@ -252,11 +261,11 @@ Um den Rand des Systems zu betrachten werden $(N_x+1) \cdot (N_y+1)$ Gitterpunkt
 \cref{Gl:FTCS} kann nun numerisch integriert werden, indem $T^{n+1}_{i,j}$ für jeden Gitterpunkt berechnet wird.
 Allerdings ist darauf zu achten ob man $T^{n+1}_{i,j}$ am Rand berechnet, denn hier müssen die Randbedingungen in die Gleichung eingebaut werden.
 
-Die Dirichlet Randbedingungen lassen sich unproblematisch für $T^{n}_{i,0}$ und $T^{n}_{i,N_y+1}$ einsetzen. Diese Gitterpunkte verändern sich nicht im Laufe der Zeit, müssen also nicht integriert werden.
-Anders sieht dies allerdings für die Neumann Randbedingungen aus. Die Gitterpunkte mit $i=0$ und $i=N_x+1$ verändern sich sehr wohl im Laufe der Zeit.
+Die Dirichlet-Randbedingungen lassen sich unproblematisch für $T^{n}_{i,0}$ und $T^{n}_{i,N_y+1}$ einsetzen. Diese Gitterpunkte verändern sich nicht im Laufe der Zeit, müssen also nicht integriert werden.
+Anders sieht dies allerdings für die Neumann-Randbedingungen aus. Die Gitterpunkte mit $i=0$ und $i=N_x+1$ verändern sich sehr wohl im Laufe der Zeit.
 
 Um zu vermeiden, dass man auf Gitterpunkte außerhalb des Gitters zugreift, muss man eine Vorwärtsdifferenz verwenden.
-Eine Näherung zweiter Ordnung für die Ableitung $\frac{\partial T(\boldsymbol x,t)}{\partial x}$ bei $x=0$ und $x=1$ lässt sich mit \cref{Gl:forw2} berechnen:
+Eine Näherung zweiter Ordnung für die Ableitung $\frac{\partial T(\boldsymbol x,t)}{\partial x}$ bei $x=0$ und $x=1$ lässt sich mit \cref{Gl:forw2} berechnen\cite{numstr}:
 \begin{align}
   \begin{split}
   T^{n+1}_{0,j} = -\frac{1}{3} \left( T^{n+1}_{2,j}-4T^{n+1}_{1,j}\right), \\
@@ -268,7 +277,7 @@ Mit \cref{Gl:FTCS} und \cref{Gl:forw2} ist man nun in der Lage das das Problem z
 
 \subsection{Die BTCS-Variante}
 Im Gegensatz zu dem FTCS-Verfahren, welches ein explizites Verfahren zu Lösung von partiellen Differentialgleichungen darstellt, handelt es sich bei der \emph{BTCS}-Methode (\textbf{B}ackwards \textbf{T}ime \textbf{C}entral \textbf{S}pace) um ein implizites Verfahren.
-Implizite Verfahren erfordern die Lösung eines Gleichungssystems ehe ein Zeitschritt durchgeführt werden kann, garantieren im Gegenzug dafür aber Kovergenz.
+Implizite Verfahren erfordern die Lösung eines Gleichungssystems ehe ein Zeitschritt durchgeführt werden kann, garantieren im Gegenzug dafür aber Konvergenz.
 
 Im BTCS-Verfahren wird die Zeitableitung durch eine Rückwärtsdifferenz diskretisiert. Dadurch entsteht in dem vorliegenden Problem zunächst ein lineares Gleichungssystem aus $(N_x+1)\cdot (N_y+1)$ Gleichungen für die $T^n_{i,j}$.
 \begin{align}
@@ -283,7 +292,7 @@ Führt man die Dirichlet-Randbedingungen ein so reduziert sich das Gleichungssys
 \end{align}
 und einem analogen Quotienten für $x=1$. Mithilfe dieser Gleichungen lassen sich die Terme $T^{n}_{-1,j}$ und $T^{n}_{N_x+2,j}$ aus dem Gleichungssystem eliminieren und somit die Neumann-Randbedingungen in die Gleichungen einbauen.
 
-Um dieses System zu lösen bietet es sich an das Gitter $T^n_{i,j}$ als $N_x \cdot (N_y-1)$ dimensionalen Vektor umzuschreiben.
+Um dieses System zu lösen bietet es sich an das Gitter $T^n_{i,j}$ als $N_x \cdot (N_y-1)$-dimensionalen Vektor umzuschreiben.
 Die Lösung des Systems entspricht dann einer Invertierung der Matrix $M$, die sich aus den Gleichungen als \cref{Gl:Matrix} ergibt.
 
 \begin{align}
@@ -308,7 +317,7 @@ Die Terme $A=\frac{Pe~\Delta t}{\Delta x}$ und $D=\frac{\Delta t}{\Delta x^2}$ e
 Die Matrix $M$ hat für vernünftige Gittergrößen und Zeitschritte $\Delta t$ die Eigenschaft, dass sie diagonal dominant ist. Also die Summe der Beträge der nicht-diagonalen Einträge in jeder Spalte nicht den Betrag des diagonalen Eintrags dieser Spalte übersteigt.
 
 Für Matrizen mit dieser Eigenschaft liefert das sogenannte Gauß-Seidel-Verfahren eine approximative Lösung des Gleichungssystems $ M\boldsymbol x = \boldsymbol b$, die garantiert gegen die tatsächliche Lösung konvergiert.
-Zunächst wird $M$ in eine Summe aus untere und oberer Dreiecksmatrix, $L$ und $U$, und der Diagonale $D$ zerlegt. Die Iterationsvorschrift des Gauß-Seidel-Verfahrens sieht nun wie folgt aus:
+Zunächst wird $M$ in eine Summe aus untere und oberer Dreiecksmatrix, $L$ und $U$, und der Diagonale $D$ zerlegt. Die Iterationsvorschrift des Gauß-Seidel-Verfahrens sieht nun wie folgt aus\cite{numstr}:
 \begin{align}
   \boldsymbol x_{n+1} = (L+D)^{-1}(\boldsymbol b - U\boldsymbol x_{n}) \label{eq:gss}
 \end{align}
@@ -316,7 +325,7 @@ Der Vorteil dieser Methode liegt darin, dass das Produkt von $(L+D)^{-1}$ mit ei
 
 Eine Weiterentwicklung des Gauß-Seidel-Algorithmus ist die \emph{successive overrelaxation}-Methode (SOR). Dazu wird \cref{eq:gss} zunächst durch den Korrekturvektor $\boldsymbol r_n = M\boldsymbol x_n -\boldsymbol b$ ausgedrückt.
 Über den Relaxationsparameter $\omega$ kann nun die Konvergenz des Gauß-Seidel-Verfahrens erheblich beschleunigt werden.
-Die Iterationsvorschrift des SOR-Algorithmus lautet:
+Die Iterationsvorschrift des SOR-Algorithmus lautet \cite{sor}:
 \begin{align}
   \boldsymbol x_{n+1} = \boldsymbol x_n - \omega (L+D)^{-1}(\boldsymbol r_n) \label{eq:sor}
 \end{align}
@@ -330,7 +339,7 @@ Für die Wärmetransportgleichung liegt der optimale Relaxationsparameter zwisch
 \includegraphics[height=0.45\textheight]{FTCSflow.pdf}\caption{Flowchart der Implementierung der FTCS-Methode.}\label{fig:FTCS}
 \end{figure}
 
-Zur Bearbeitung des Problems wurden die beiden Methoden, FTCS und BTCS, in zwei getrennten Programmen implementiert. Als interface mit den Programmen wurde eine Konfigurationsdatei erstellt, die es erlaubt Parameter der Algorithmen zu ändern, ohne das Programm neu komplilieren zu müssen.
+Zur Bearbeitung des Problems wurden die beiden Methoden, FTCS und BTCS, in zwei getrennten Programmen implementiert. Als Schnittstelle mit den Programmen wurde eine Konfigurationsdatei erstellt, die es erlaubt Parameter der Algorithmen zu ändern, ohne das Programm neu kompilieren zu müssen.
 Die Interaktion mit der Konfigurationsdatei wurde in der Headerdatei \emph{interface.h} implementiert, welche zudem sämtliche Funktionen zur Ausgabe der Ergebnisse beinhaltet.
 
 Die Kernfunktionen der Integration befinden sich in der \emph{integration.h}-Datei. Diese sind die Initialisierungen der Temperaturfelder, des Quellfeldes und der Geschwindigkeitsfelder.
@@ -357,7 +366,7 @@ Die Darstellung der Ergebnisse wurde mittels \emph{Python-Matplotlib} durchgefü
 \FloatBarrier
 \newpage
 \section{Ergebnisse}
-Die anfängliche Betrachtung des Temperaturfeldes im Verlauf der Zeit, wie es durch die FTCS-Methode berechnet wird, liefert die Ergebnisse in \cref{fig:FTCSnaive}. Hiefür wurde eine Peclet-Zahl von $Pe~=10$ und ein Gitter von $N_x=N_y=30$ angenommen. Die Schrittweite in der Zeit beträgt $dt=0.0002$.
+Die anfängliche Betrachtung des Temperaturfeldes im Verlauf der Zeit, wie es durch die FTCS-Methode berechnet wird, liefert die Ergebnisse in \cref{fig:FTCSnaive}. Hiefür wurde eine Péclet-Zahl von $Pe~=10$ und ein Gitter von $N_x=N_y=30$ angenommen. Die Schrittweite in der Zeit beträgt $\Delta t=0.0002$.
 
 \begin{figure}
 \centering
@@ -390,10 +399,11 @@ Die anfängliche Betrachtung des Temperaturfeldes im Verlauf der Zeit, wie es du
 \newpage
 \subsection{Fehler der FTCS-Lösung}
 Allerdings muss noch überprüft werden, wie genau das Ergebnis ist, und, wie die Gittergröße sich auf die Konvergenz auswirkt.
-Dazu wird \cref{eq:PDGL_Quell} benutzt. Da die stabile stationäre Lösung dieser Gleichung bekannt ist verfügt man über ein Referenzfeld gegen das die FTCS-Näherung konvergieren müsste.
+Dazu wird \cref{Gl:PDGL_Quell} benutzt. Da die stabile stationäre Lösung dieser Gleichung bekannt ist verfügt man über ein Referenzfeld, gegen das die FTCS-Näherung konvergieren müsste.
 In \cref{fig:Performance1} ist die quadratische Abweichung von $T^*$ als Funktion der Zeit für verschiedene Gittergrößen dargestellt.
 Es ist sichtbar, dass die numerische Lösung gegen einen konstanten Fehler konvergiert.
 Eine Verfeinerung des Gitters von $N=5$ auf $10$ führt zu einer drastischen Verbesserung der Genauigkeit der Lösung, da der Fehler um fast eine Größenordnung sinkt. Bei weiterer Verfeinerung des Gitters kann ein weiterer Zuwachs an Genauigkeit festgestellt werden.
+
 \cref{fig:Performance2} zeigt die Fehler zur Zeit $t=0.5$. Sichtbar wird hier, dass der Zuwachs an Genauigkeit mit steigender Gittergröße abnimmt.
 Für die hier am häufigsten verwendete Gittergröße $N=30$ beträgt die $SSE$ nach einer Zeit von 0.5 nur ca. 0.02.
 \begin{figure}
@@ -402,14 +412,15 @@ Für die hier am häufigsten verwendete Gittergröße $N=30$ beträgt die $SSE$ 
 \end{figure}
 \begin{figure}
 \centering
-\includegraphics[width=0.8\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/SSE_at_end.pdf}\caption{Sum of squared errors (SSE) der numerischen Integration im Vergleich zu dem Referenzfeld $T^*$.}\label{fig:Performance1}
+\includegraphics[width=0.8\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/SSE_at_end.pdf}\caption{Sum of squared errors (SSE) der numerischen Integration im Vergleich zu dem Referenzfeld $T^*$.}\label{fig:Performance2}
 \end{figure}
 Eine SSE von nur 0.02 ist durchaus akzeptabel, vor allem da dies einer noch geringeren Abweichung der einzelnen Gitterpunkte von $T^*$ entspricht, da die SSE nicht auf die Anzahl der Gitterpunkte normiert ist. Damit lässt sich sagen, dass das FTCS-Verfahren eine physikalisch sinnvolle Lösung des Problems liefert.
-\subsection{Vergleich unterschiedlicher Peclet-Zahlen}
-Nun da bekannt ist, dass die numerische Lösung des Verfahrens eine korrekte Lösung des Problems liefert, kann das ursprüngliche Problem aus \cref{Gl:PDGL} genauer betrachtet werden.
-In \cref{fig:A4} sind die Temperaturfelder für die Peclet-Zahlen $Pe~=2$ und $Pe~=10$ zu den Zeiten $t = 0.005,0.05$ und $0.5$ visualisiert. Die Gittergröße beträgt wieder $N=30$ und die Zeitschrittweite $dt=0.0002$.
 
-Aus dem Vergleich wird deutlich welchen Einfluss die Peclet-Zahl auf die Dynamik des Systems hat. Eine größere Peclet-Zahl führt zu einer schnelleren advektiven Veränderung des Temperaturfeldes.
+\subsection{Vergleich unterschiedlicher Péclet-Zahlen}
+Nun da bekannt ist, dass die numerische Lösung des Verfahrens eine korrekte Lösung des Problems liefert, kann das ursprüngliche Problem aus \cref{Gl:PDGL} genauer betrachtet werden.
+In \cref{fig:A4} sind die Temperaturfelder für die Péclet-Zahlen $Pe~=2$ und $Pe~=10$ zu den Zeiten $t = 0.005,0.05$ und $0.5$ visualisiert. Die Gittergröße beträgt wieder $N=30$ und die Zeitschrittweite $\Delta t=0.0002$.
+
+Aus dem Vergleich wird deutlich welchen Einfluss die Péclet-Zahl auf die Dynamik des Systems hat. Eine größere Péclet-Zahl führt zu einer schnelleren advektiven Veränderung des Temperaturfeldes.
 
 \begin{figure}
   \centering
@@ -444,32 +455,32 @@ Aus dem Vergleich wird deutlich welchen Einfluss die Peclet-Zahl auf die Dynamik
     \begin{subfigure}[b]{0.48\textwidth}
       \includegraphics[width=1.15\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A4/Pe10/1_10_30_30_0.0002_0.txt.png}
     \end{subfigure}
-  \caption{Temperaturfeld zu verschiedenen Zeiten und verschiedenen $Pe$. Berechnet mit dem FTCS-Verfahren. Links $Pe~=2$, rechts $Pe=10$.}\label{fig:FTCSnaive}
+  \caption{Temperaturfeld zu verschiedenen Zeiten und verschiedenen $Pe$. Berechnet mit dem FTCS-Verfahren. Links $Pe~=2$, rechts $Pe=10$.}\label{fig:A4}
 \end{figure}
 \subsection{Zulässige Zeitschritte}
-Bis jetzt wurde immer der Zeitschritt $dt=0.0002$ verwendet. Aus den obigen Simulationen ging eindeutig hervor, dass für die betrachteten Gittergrößen und Peclet-Zahlen dieser Zeitschritt noch ein stabiles Verfahren liefert.
+Bis jetzt wurde immer der Zeitschritt $\Delta t=0.0002$ verwendet. Aus den obigen Simulationen ging eindeutig hervor, dass für die betrachteten Gittergrößen und Péclet-Zahlen dieser Zeitschritt noch ein stabiles Verfahren liefert.
 Jetzt wird untersucht ab welcher Größe der Zeitschritt zu einer Divergenz des Verfahrens führt.
 
 Eine theoretische Grenze für die Stabilität des Verfahrens wird durch das CFL-Kriterium für Diffusions- und Advektionsgleichungen vorgegeben.
 Für die Stabilität des Diffusionsterms muss folgende Ungleichung gelten:
 \begin{align}
-  \frac{\Delta t}{\Delta x^2}+\frac{\Delta t}{\Delta y^2} < CFL. \label{eq:CFLdiff}
+  \frac{\Delta t}{\Delta x^2}+\frac{\Delta t}{\Delta y^2} < 0.5. \label{eq:CFLdiff}
 \end{align}
-Wobei die CFL-Zahl für diese Ungleichung als $0.5$ angenommen wird. Intuitiv lässt sich diese Gleichung verstehen als die Bedingung, dass die mittlere quadratische Verschiebung durch die Diffusion in einem Zeitschritt den Abstand zweier Gitterpunkte nicht übersteigen darf. Für eine Diffusionskonstante von $1$ ergibt sich damit die CFL-Zahl $0.5$.
+Intuitiv lässt sich diese Gleichung verstehen als die Bedingung, dass die mittlere quadratische Verschiebung durch die Diffusion in einem Zeitschritt den Abstand zweier Gitterpunkte nicht übersteigen darf. Für eine Diffusionskonstante von $1$ ergibt sich damit die CFL-Zahl $0.5$.
 
 Die zweite Stabilitätsbedingung des FTCS-Verfahrens rührt von dem Advektionsterm her und ist ähnlich zu verstehen wie \cref{eq:CFLdiff}. In einem Zeitschritt darf die Verschiebung der Temperatur nur maximal den nächsten Gitterpunkt erreichen.
-Die Ungleichung für den zwei dimensionalen Fall lautet:
+Die Ungleichung für den zwei-dimensionalen Fall lautet \cite{CFL}:
 \begin{align}
   \frac{Pe~u_{max} \Delta t}{\Delta x} +\frac{Pe~v_{max} \Delta t}{\Delta y}  < CFL = 1. \label{eq:CFLAdv}
 \end{align}
-Für unser gegebenes Geschwindikeitsfeld ergibt sich $u_{max} = \pi$ und $v_{max} = 2\pi$. In \cref{fig:CFL} sind die Stabilitätsgrenzen als Funktionen der Peclet-Zahl dargestellt. Der Umschlag des jeweils geltenden Kriteriums befindet sich bei $Pe~=12.56$ für eine konstant gehaltene Gittergröße mit $N=30$.
+Für unser gegebenes Geschwindigkeitsfeld ergibt sich $u_{max} = \pi$ und $v_{max} = 2\pi$. In \cref{fig:CFL} sind die Stabilitätsgrenzen als Funktionen der Péclet-Zahl dargestellt. Der Umschlag des jeweils geltenden Kriteriums befindet sich bei $Pe~=12.56$ für eine konstant gehaltene Gittergröße mit $N=30$.
 \begin{figure}
   \centering
   \includegraphics[width=0.7\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A5/theoretical.pdf}
-  \caption{Theoretisch erwartete Grenzen für die Stabiliät in Abhängigkeit von der Peclet-Zahl. Die Punkte markieren die in \cref{fig:stab} gefundenen maximal stabilen Werte.}\label{fig:CFL}
+  \caption{Theoretisch erwartete Grenzen für die Stabilität in Abhängigkeit von der Péclet-Zahl. Die Punkte markieren die in \cref{fig:stab} gefundenen maximal stabilen Werte.}\label{fig:CFL}
 \end{figure}
 
-Für die Peclet-Zahlen $Pe~=(0.1,1,10,20,100)$ wurde das System mit unterschiedlichen Zeitschritten integriert. \cref{fig:stab} zeigt die Entwicklung des Mittelwertes der Beträge der Gitterpunkte. Die jeweils größten stabilen Zeitschritte sind in \cref{fig:CFL} als Punkte eingetragen.
+Für die Péclet-Zahlen $Pe~=(0.1,1,10,20,100)$ wurde das System mit unterschiedlichen Zeitschritten integriert. \cref{fig:stab} zeigt die Entwicklung des Mittelwertes der Beträge der Gitterpunkte. Die jeweils größten stabilen Zeitschritte sind in \cref{fig:CFL} als Punkte eingetragen.
 
 Aus der Analyse von \cref{fig:stab} geht hervor, dass für $Pe~=(0.1,1,10,20)$ selbst Zeitschritte, die leicht über der Stabilitätsschranke liegen, noch stabil erscheinen.
 
@@ -477,9 +488,9 @@ Allerdings geht aus den Simulationen hervor, dass die der Divergenz für kleiner
 
 Ein anderes Problem tut sich jedoch auf wenn man $Pe~=100$ betrachtet. Diese wurde hier lediglich betrachtet, weil der Umschlag der Stabilitätsgrenze bei $Pe~=20$ nicht erkennbar war, wahrscheinlich wegen des oben beschriebenen Phänomens.
 
-Im Gegensatz zu den kleineren Peclet-Zahlen, liefert die numerische Untersuchung von $Pe~=100$ Zeitschritte die nach \cref{eq:CFLAdv} stabil sein sollten, aber in der Praxis zu Divergenz führen.
+Im Gegensatz zu den kleineren Péclet-Zahlen, liefert die numerische Untersuchung von $Pe~=100$ Zeitschritte die nach \cref{eq:CFLAdv} stabil sein sollten, aber in der Praxis zu Divergenz führen.
 
-Diese Tatsache verdeutlicht, dass es sich bei den CFL-Kriterien nur um notwendige Kriterien handelt und nicht um hinreichende. Eine Neumann'sche Stabilitätsanalyse könnte weitere Kriterien für die Stabilität des Verfahren für größere Peclet-Zahlen aufzeigen.
+Diese Tatsache verdeutlicht, dass es sich bei den CFL-Kriterien nur um notwendige Kriterien handelt und nicht um hinreichende. Eine Neumann'sche Stabilitätsanalyse könnte weitere Kriterien für die Stabilität des Verfahren für größere Péclet-Zahlen aufzeigen.
 
 \begin{figure}
   \centering
@@ -506,7 +517,7 @@ Diese Tatsache verdeutlicht, dass es sich bei den CFL-Kriterien nur um notwendig
   \begin{subfigure}[b]{0.5\textwidth}
   \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/FTCS/plots/A5/Divergence_Pe100.0.pdf}
   \end{subfigure}
-  \caption{Suche nach dem maximalen stabilen Zeitschritt für verschiedene Peclet-Zahlen.}\label{fig:stab}
+  \caption{Suche nach dem maximalen stabilen Zeitschritt für verschiedene Péclet-Zahlen.}\label{fig:stab}
 \end{figure}
 \subsection{Feineinstellung des SOR-Algorithmus}
 Da in jedem Zeitschritt des BTCS-Verfahrens ein lineares Gleichungssystem in $N\cdot(N-2)$ Dimensionen gelöst werden muss, und dies Rechenzeit in Anspruch nimmt, ist es sinnvoll das SOR-Verfahren zu optimieren.
@@ -514,28 +525,28 @@ Gesucht ist nun der Relaxationsparameter $\omega$, für welchen die geringste An
 
 Als Testgleichung wird $M\boldsymbol x = \boldsymbol T^0$ verwendet. Wobei $\boldsymbol T^0$ die Anfangsbedingung unseres Problems darstellt.
 
-Ein Parameterscan in $\omega$ wurde für die Matrizen $M$ mit Parametern $Pe~=10$, $dt=100$, $N=30$ und $Pe~=10$, $dt=0.0002$, $N=30$ durchgeführt. Als Fehlergrenze für $|\boldsymbol r_n|$ wird $10^{-4}$ gewählt.
-Die Ergebnisse sind in \cref{fig:parscan100} und \cref{fig:parscan000} dargsetellt.
+Ein Parameterscan in $\omega$ wurde für die Matrizen $M$ mit Parametern $Pe~=10$, $\Delta t=100$, $N=30$ und $Pe~=10$, $\Delta t=0.0002$, $N=30$ durchgeführt. Als Fehlergrenze für $|\boldsymbol r_n|$ wird $10^{-4}$ gewählt.
+Die Ergebnisse sind in \cref{fig:parscan100} und \cref{fig:parscan000} dargestellt.
 
 Es zeigt sich dass der optimale Wert für $\omega$ stark von der Matrix $M$ abhängt.
-Nicht nur da Minimum der Funktion liegt an unterschiedlichen Positionen ($\omega_{min}=1.599$ für $\Delta t=100$ und $\omega_{min}=1.1$ für $\Delta t=0.0002$), auch das Profil der Iterationen für jedes $\omega$ verändert sich stark. Für \cref{fig:parscan100} explodiert die Anzahl der benötigten Iterationen kurz nach erreichen des optimalen Relaxationsparameters, während das Minimum bei einem Zeitschritt von $dt=0.0002$ wesentlich flacher ist.
+Nicht nur da Minimum der Funktion liegt an unterschiedlichen Positionen ($\omega_{min}=1.599$ für $\Delta t=100$ und $\omega_{min}=1.1$ für $\Delta t=0.0002$), auch das Profil der Iterationen für jedes $\omega$ verändert sich stark. Für \cref{fig:parscan100} explodiert die Anzahl der benötigten Iterationen kurz nach erreichen des optimalen Relaxationsparameters, während das Minimum bei einem Zeitschritt von $\Delta t=0.0002$ wesentlich flacher ist.
 
 Daraus lässt sich schließen, dass die Genauigkeit der Wahl des Relaxationsparameters bei bestimmten Matrizen einen bedeutenden Einfluss auf die Geschwindigkeit des Algorithmus nehmen kann.
 
 \begin{figure}
 \centering
 \begin{subfigure}[b]{0.45\textwidth}
-  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/BTCS/plots/omegascan_dt100.pdf}\caption{Parameterscan in $\omega$ für die Parameter $Pe~=10$, $dt=100$ und $N=30$. Der optimale $\omega$-Wert liegt bei etwa 1.599.}\label{fig:parscan100}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/BTCS/plots/omegascan_dt100.pdf}\caption{Parameterscan in $\omega$ für die Parameter $Pe~=10$, $\Delta t=100$ und $N=30$. Der optimale $\omega$-Wert liegt bei etwa 1.599.}\label{fig:parscan100}
 \end{subfigure}
 ~
 \begin{subfigure}[b]{0.45\textwidth}
-  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/BTCS/plots/omegascan_dt0.0002.pdf}\caption{Parameterscan in $\omega$ für die Parameter $Pe~=10$, $dt=0.0002$ und $N=30$. Der optimale $\omega$-Wert liegt bei etwa 1.1.}\label{fig:parscan000}
+  \includegraphics[width=\textwidth]{/home/marszal/Projects/Num_Str_final/BTCS/plots/omegascan_dt0.0002.pdf}\caption{Parameterscan in $\omega$ für die Parameter $Pe~=10$, $\Delta t=0.0002$ und $N=30$. Der optimale $\omega$-Wert liegt bei etwa 1.1.}\label{fig:parscan000}
 \end{subfigure}
 \end{figure}
 
 \subsection{Vergleich FTCS und BTCS}
 Mit dem optmimierten SOR-Verfahren kann nun sinnvoll ein Vergleich zwischen dem FTCS- und dem BTCS-Verfahren durchgeführt werden.
-Für die Parameter $Pe~=10$, $dt=0.0002$ und $N=30$ is in \cref{fig:vergleich} das Temperaturfeld für verschieden Zeitpunkte, mit dem FTCS- und dem BTCS-Verfahren integriert, aufgezeigt.
+Für die Parameter $Pe~=10$, $\Delta t=0.0002$ und $N=30$ is in \cref{fig:vergleich} das Temperaturfeld für verschieden Zeitpunkte, mit dem FTCS- und dem BTCS-Verfahren integriert, aufgezeigt.
 
 Es sind keine starken Unterschiede zu erkennen. Man kann unter Umständen eine Abweichung zur Zeit $t=0.0054$ erkennen, diese ist aber nur sehr schwach ausgeprägt.
 
@@ -573,8 +584,10 @@ Bei längeren Integrationszeiträumen jedoch stößt die FTCS-Methode an ihre Gr
 Dadurch werden wesentlich mehr Iterationen benötigt, wodurch die Laufzeit anwächst.
 Die BTCS-Methode kann selbst bei großen Zeitschritten ein gutes Ergebnis liefern, wie in \cref{fig:vergleich2} zu sehen ist.
 
-Für einem Integrationzeitraum von $t_{end}=100$ liefert das FTCS-Verfahren eine Laufzeit von 120~s und das BTCS-Verfahren eine Laufzeit von 93~s, bei einem Zeitschritt von $\Delta t = 100$.
+Für einem Integrationszeitraum von $t_{end}=100$ liefert das FTCS-Verfahren eine Laufzeit von 120~s und das BTCS-Verfahren eine Laufzeit von 93~s, bei einem Zeitschritt von $\Delta t = 100$.
 Damit bestätigt sich die Vermutung, dass implizite Verfahren bei größeren Integrationszeiträumen, und wenn keine hohe Zeitauflösung benötigt wird, die effizientere Alternative zu den expliziten Methoden bilden.
+
+Die genaue Performance der beiden Methoden, lässt sich jedoch nur relativ bestimmen, da bei der Implementierung der Algorithmen nicht auf Geschwindigkeit gesetzt wurde, sondern auf Übersichtlichkeit und Lesbarkeit des Quellcodes.
 
 \begin{figure}
 \centering
@@ -596,5 +609,7 @@ Interessiert man sich für die Simulation langer Zeiträume, bei relativ grober 
 Zwar büßt man an Zeitauflösung ein, da man die Anzahl der Zeitschritte möglichst gering halten möchte, gewinnt aber an Stabilität, und ab einer bestimmten Größe des simulierten Zeitraums spart man ebenfalls Laufzeit gegenüber des FTCS-Schemas.
 
 Implementiert man das BTCS-Verfahren, so muss der Relaxationsparameter sorgfältig gewählt werden, da er die Anzahl der Iterationen pro Zeitschritt deutlich reduzieren kann.
-
+\newpage
+\bibliography{report}{}
+\bibliographystyle{plain}
 \end{document}

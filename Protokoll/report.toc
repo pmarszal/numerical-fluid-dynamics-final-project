@@ -1,0 +1,16 @@
+\select@language {ngerman}
+\contentsline {section}{\numberline {1}Einleitung}{2}
+\contentsline {section}{\numberline {2}Problemstellung}{3}
+\contentsline {section}{\numberline {3}Methoden}{5}
+\contentsline {subsection}{\numberline {3.1}Finite-Differenzen-Verfahren}{5}
+\contentsline {subsection}{\numberline {3.2}FTCS-Variante}{6}
+\contentsline {subsection}{\numberline {3.3}Die BTCS-Variante}{7}
+\contentsline {subsection}{\numberline {3.4}Der SOR-Algorithmus}{9}
+\contentsline {section}{\numberline {4}Programmstruktur}{10}
+\contentsline {section}{\numberline {5}Ergebnisse}{12}
+\contentsline {subsection}{\numberline {5.1}Fehler der FTCS-L\IeC {\"o}sung}{13}
+\contentsline {subsection}{\numberline {5.2}Vergleich unterschiedlicher P\IeC {\'e}clet-Zahlen}{14}
+\contentsline {subsection}{\numberline {5.3}Zul\IeC {\"a}ssige Zeitschritte}{14}
+\contentsline {subsection}{\numberline {5.4}Feineinstellung des SOR-Algorithmus}{17}
+\contentsline {subsection}{\numberline {5.5}Vergleich FTCS und BTCS}{19}
+\contentsline {section}{\numberline {6}Fazit}{22}

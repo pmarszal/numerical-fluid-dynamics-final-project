@@ -1,0 +1,20 @@
+\begin{thebibliography}{1}
+
+\bibitem{sor}
+Louis~A. Hageman and David M.~Young (Auth.).
+\newblock {\em Applied Iterative Methods}.
+\newblock Computer Science & Applied Mathematics. Elsevier Inc, Academic Press,
+  1981.
+
+\bibitem{CFL}
+Friedrichs K. Courant~R. Lewy, H.
+\newblock Über die partiellen differenzengleichungen der mathematischen
+  physik.
+\newblock {\em Mathematische Annalen}, 100:32--74, 1928.
+
+\bibitem{numstr}
+Prof. Dr. Milovan Perić~(auth.) Prof. Dr. Joel H.~Ferziger.
+\newblock {\em Numerische Strömungsmechanik}.
+\newblock Springer-Verlag Berlin Heidelberg, 1 edition, 2008.
+
+\end{thebibliography}

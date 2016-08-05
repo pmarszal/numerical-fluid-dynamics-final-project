@@ -1,0 +1,15 @@
+\BOOKMARK [1][-]{section.1}{Einleitung}{}% 1
+\BOOKMARK [1][-]{section.2}{Problemstellung}{}% 2
+\BOOKMARK [1][-]{section.3}{Methoden}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Finite-Differenzen-Verfahren}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{FTCS-Variante}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.3}{Die BTCS-Variante}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.4}{Der SOR-Algorithmus}{section.3}% 7
+\BOOKMARK [1][-]{section.4}{Programmstruktur}{}% 8
+\BOOKMARK [1][-]{section.5}{Ergebnisse}{}% 9
+\BOOKMARK [2][-]{subsection.5.1}{Fehler der FTCS-L\366sung}{section.5}% 10
+\BOOKMARK [2][-]{subsection.5.2}{Vergleich unterschiedlicher Peclet-Zahlen}{section.5}% 11
+\BOOKMARK [2][-]{subsection.5.3}{Zul\344ssige Zeitschritte}{section.5}% 12
+\BOOKMARK [2][-]{subsection.5.4}{Feineinstellung des SOR-Algorithmus}{section.5}% 13
+\BOOKMARK [2][-]{subsection.5.5}{Vergleich FTCS und BTCS}{section.5}% 14
+\BOOKMARK [1][-]{section.6}{Fazit}{}% 15
